@@ -1,0 +1,160 @@
+lr = 0.0001
+epsilon = 0.1
+gamma = 0.99
+c0 = 1
+c1 = 1
+c2 = 1
+epochs = 2500
+K_epochs = 5
+Total_random_runs = 5
+
+
+[Model0] Layers: 5, Setup: [[8, 1024], [1024, 128], [128, 16], [16, 256], [256, 256]]
+[Model1] Layers: 5, Setup: [[8, 1024], [1024, 128], [128, 16], [16, 256], [256, 256]]
+[Model2] Layers: 5, Setup: [[8, 1024], [1024, 128], [128, 16], [16, 256], [256, 256]]
+[Model4] Layers: 5, Setup: [[8, 1024], [1024, 128], [128, 16], [16, 256], [256, 256]]
+
+[Model 12418] Epoch: 100, L_clip: -0.22, Squared loss: 0.70, Entropy loss: 0.69, Avg Rewards: -5.00, Time elapsed: 2.92s
+[Model 12421] Epoch: 100, L_clip: -0.22, Squared loss: 0.73, Entropy loss: 0.69, Avg Rewards: -4.98, Time elapsed: 2.93s
+[Model 12420] Epoch: 100, L_clip: -0.22, Squared loss: 0.72, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 2.98s
+[Model 12419] Epoch: 100, L_clip: -0.25, Squared loss: 0.77, Entropy loss: 0.69, Avg Rewards: -5.00, Time elapsed: 3.01s
+[Model 12417] Epoch: 100, L_clip: -0.21, Squared loss: 0.63, Entropy loss: 0.69, Avg Rewards: -5.00, Time elapsed: 3.05s
+[Model 12418] Epoch: 200, L_clip: -0.00, Squared loss: 0.09, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 5.54s
+[Model 12421] Epoch: 200, L_clip: -0.00, Squared loss: 0.08, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 5.56s
+[Model 12419] Epoch: 200, L_clip: 0.01, Squared loss: 0.16, Entropy loss: 0.69, Avg Rewards: -4.96, Time elapsed: 5.70s
+[Model 12420] Epoch: 200, L_clip: -0.00, Squared loss: 0.10, Entropy loss: 0.69, Avg Rewards: -4.97, Time elapsed: 5.72s
+[Model 12417] Epoch: 200, L_clip: -0.01, Squared loss: 0.11, Entropy loss: 0.69, Avg Rewards: -4.97, Time elapsed: 5.85s
+[Model 12418] Epoch: 300, L_clip: -0.00, Squared loss: 0.09, Entropy loss: 0.69, Avg Rewards: -4.97, Time elapsed: 8.26s
+[Model 12421] Epoch: 300, L_clip: -0.00, Squared loss: 0.08, Entropy loss: 0.69, Avg Rewards: -4.98, Time elapsed: 8.28s
+[Model 12420] Epoch: 300, L_clip: -0.00, Squared loss: 0.11, Entropy loss: 0.69, Avg Rewards: -4.97, Time elapsed: 8.43s
+[Model 12419] Epoch: 300, L_clip: -0.01, Squared loss: 0.06, Entropy loss: 0.69, Avg Rewards: -5.00, Time elapsed: 8.48s
+[Model 12417] Epoch: 300, L_clip: 0.00, Squared loss: 0.08, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 8.66s
+[Model 12418] Epoch: 400, L_clip: -0.00, Squared loss: 0.10, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 11.07s
+[Model 12421] Epoch: 400, L_clip: -0.00, Squared loss: 0.08, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 11.08s
+[Model 12419] Epoch: 400, L_clip: 0.00, Squared loss: 0.11, Entropy loss: 0.69, Avg Rewards: -4.98, Time elapsed: 11.31s
+[Model 12420] Epoch: 400, L_clip: 0.00, Squared loss: 0.07, Entropy loss: 0.69, Avg Rewards: -5.00, Time elapsed: 11.32s
+[Model 12417] Epoch: 400, L_clip: -0.00, Squared loss: 0.10, Entropy loss: 0.69, Avg Rewards: -4.97, Time elapsed: 11.57s
+[Model 12418] Epoch: 500, L_clip: -0.00, Squared loss: 0.13, Entropy loss: 0.69, Avg Rewards: -4.97, Time elapsed: 13.70s
+[Model 12421] Epoch: 500, L_clip: 0.01, Squared loss: 0.20, Entropy loss: 0.69, Avg Rewards: -4.93, Time elapsed: 13.79s
+[Model 12419] Epoch: 500, L_clip: 0.00, Squared loss: 0.13, Entropy loss: 0.69, Avg Rewards: -4.95, Time elapsed: 13.97s
+[Model 12420] Epoch: 500, L_clip: -0.00, Squared loss: 0.11, Entropy loss: 0.69, Avg Rewards: -4.97, Time elapsed: 13.97s
+[Model 12417] Epoch: 500, L_clip: -0.00, Squared loss: 0.11, Entropy loss: 0.69, Avg Rewards: -4.97, Time elapsed: 14.35s
+[Model 12418] Epoch: 600, L_clip: 0.00, Squared loss: 0.08, Entropy loss: 0.69, Avg Rewards: -4.98, Time elapsed: 16.42s
+[Model 12421] Epoch: 600, L_clip: -0.01, Squared loss: 0.07, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 16.50s
+[Model 12420] Epoch: 600, L_clip: -0.01, Squared loss: 0.08, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 16.72s
+[Model 12419] Epoch: 600, L_clip: -0.01, Squared loss: 0.07, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 16.74s
+[Model 12417] Epoch: 600, L_clip: 0.00, Squared loss: 0.06, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 17.20s
+[Model 12418] Epoch: 700, L_clip: 0.01, Squared loss: 0.08, Entropy loss: 0.69, Avg Rewards: -4.98, Time elapsed: 19.08s
+[Model 12421] Epoch: 700, L_clip: 0.00, Squared loss: 0.08, Entropy loss: 0.69, Avg Rewards: -4.97, Time elapsed: 19.17s
+[Model 12420] Epoch: 700, L_clip: 0.00, Squared loss: 0.09, Entropy loss: 0.69, Avg Rewards: -4.97, Time elapsed: 19.43s
+[Model 12419] Epoch: 700, L_clip: -0.00, Squared loss: 0.08, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 19.48s
+[Model 12417] Epoch: 700, L_clip: -0.00, Squared loss: 0.05, Entropy loss: 0.69, Avg Rewards: -5.00, Time elapsed: 19.99s
+[Model 12418] Epoch: 800, L_clip: -0.00, Squared loss: 0.08, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 22.05s
+[Model 12421] Epoch: 800, L_clip: -0.00, Squared loss: 0.06, Entropy loss: 0.69, Avg Rewards: -5.00, Time elapsed: 22.16s
+[Model 12420] Epoch: 800, L_clip: -0.01, Squared loss: 0.06, Entropy loss: 0.69, Avg Rewards: -5.00, Time elapsed: 22.50s
+[Model 12419] Epoch: 800, L_clip: -0.00, Squared loss: 0.10, Entropy loss: 0.69, Avg Rewards: -4.98, Time elapsed: 22.55s
+[Model 12417] Epoch: 800, L_clip: -0.00, Squared loss: 0.11, Entropy loss: 0.69, Avg Rewards: -4.96, Time elapsed: 23.12s
+[Model 12418] Epoch: 900, L_clip: -0.00, Squared loss: 0.04, Entropy loss: 0.69, Avg Rewards: -5.00, Time elapsed: 24.73s
+[Model 12421] Epoch: 900, L_clip: -0.00, Squared loss: 0.10, Entropy loss: 0.69, Avg Rewards: -4.97, Time elapsed: 24.86s
+[Model 12420] Epoch: 900, L_clip: 0.00, Squared loss: 0.08, Entropy loss: 0.69, Avg Rewards: -4.98, Time elapsed: 25.24s
+[Model 12419] Epoch: 900, L_clip: 0.00, Squared loss: 0.09, Entropy loss: 0.69, Avg Rewards: -4.96, Time elapsed: 25.34s
+[Model 12417] Epoch: 900, L_clip: 0.00, Squared loss: 0.07, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 25.97s
+[Model 12418] Epoch: 1000, L_clip: -0.00, Squared loss: 0.06, Entropy loss: 0.69, Avg Rewards: -5.00, Time elapsed: 27.54s
+[Model 12421] Epoch: 1000, L_clip: -0.01, Squared loss: 0.08, Entropy loss: 0.69, Avg Rewards: -4.98, Time elapsed: 27.77s
+[Model 12420] Epoch: 1000, L_clip: -0.01, Squared loss: 0.10, Entropy loss: 0.69, Avg Rewards: -4.97, Time elapsed: 28.21s
+[Model 12419] Epoch: 1000, L_clip: 0.00, Squared loss: 0.05, Entropy loss: 0.69, Avg Rewards: -5.00, Time elapsed: 28.37s
+[Model 12417] Epoch: 1000, L_clip: 0.01, Squared loss: 0.10, Entropy loss: 0.69, Avg Rewards: -4.96, Time elapsed: 29.03s
+[Model 12418] Epoch: 1100, L_clip: -0.00, Squared loss: 0.05, Entropy loss: 0.69, Avg Rewards: -5.00, Time elapsed: 30.37s
+[Model 12421] Epoch: 1100, L_clip: 0.00, Squared loss: 0.08, Entropy loss: 0.69, Avg Rewards: -4.98, Time elapsed: 30.61s
+[Model 12420] Epoch: 1100, L_clip: 0.00, Squared loss: 0.06, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 31.04s
+[Model 12419] Epoch: 1100, L_clip: -0.01, Squared loss: 0.06, Entropy loss: 0.69, Avg Rewards: -5.00, Time elapsed: 31.30s
+[Model 12417] Epoch: 1100, L_clip: -0.02, Squared loss: 0.07, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 32.17s
+[Model 12418] Epoch: 1200, L_clip: 0.01, Squared loss: 0.05, Entropy loss: 0.69, Avg Rewards: -5.00, Time elapsed: 33.45s
+[Model 12421] Epoch: 1200, L_clip: 0.01, Squared loss: 0.08, Entropy loss: 0.69, Avg Rewards: -4.96, Time elapsed: 33.82s
+[Model 12420] Epoch: 1200, L_clip: -0.00, Squared loss: 0.07, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 34.21s
+[Model 12419] Epoch: 1200, L_clip: 0.00, Squared loss: 0.08, Entropy loss: 0.69, Avg Rewards: -4.97, Time elapsed: 34.38s
+[Model 12417] Epoch: 1200, L_clip: 0.00, Squared loss: 0.07, Entropy loss: 0.69, Avg Rewards: -4.98, Time elapsed: 35.18s
+[Model 12418] Epoch: 1300, L_clip: -0.01, Squared loss: 0.08, Entropy loss: 0.69, Avg Rewards: -4.97, Time elapsed: 36.19s
+[Model 12421] Epoch: 1300, L_clip: -0.00, Squared loss: 0.07, Entropy loss: 0.69, Avg Rewards: -4.97, Time elapsed: 36.56s
+[Model 12420] Epoch: 1300, L_clip: 0.00, Squared loss: 0.07, Entropy loss: 0.69, Avg Rewards: -4.98, Time elapsed: 36.98s
+[Model 12419] Epoch: 1300, L_clip: -0.00, Squared loss: 0.09, Entropy loss: 0.69, Avg Rewards: -4.96, Time elapsed: 37.20s
+[Model 12417] Epoch: 1300, L_clip: 0.00, Squared loss: 0.06, Entropy loss: 0.69, Avg Rewards: -4.98, Time elapsed: 38.02s
+[Model 12418] Epoch: 1400, L_clip: 0.00, Squared loss: 0.09, Entropy loss: 0.69, Avg Rewards: -4.97, Time elapsed: 38.88s
+[Model 12421] Epoch: 1400, L_clip: 0.00, Squared loss: 0.09, Entropy loss: 0.69, Avg Rewards: -4.96, Time elapsed: 39.27s
+[Model 12420] Epoch: 1400, L_clip: -0.01, Squared loss: 0.08, Entropy loss: 0.69, Avg Rewards: -4.97, Time elapsed: 39.70s
+[Model 12419] Epoch: 1400, L_clip: 0.00, Squared loss: 0.11, Entropy loss: 0.69, Avg Rewards: -4.97, Time elapsed: 39.95s
+[Model 12417] Epoch: 1400, L_clip: 0.00, Squared loss: 0.08, Entropy loss: 0.69, Avg Rewards: -4.97, Time elapsed: 40.83s
+[Model 12418] Epoch: 1500, L_clip: 0.00, Squared loss: 0.06, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 41.60s
+[Model 12421] Epoch: 1500, L_clip: 0.00, Squared loss: 0.09, Entropy loss: 0.69, Avg Rewards: -4.97, Time elapsed: 41.99s
+[Model 12420] Epoch: 1500, L_clip: -0.00, Squared loss: 0.07, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 42.41s
+[Model 12419] Epoch: 1500, L_clip: -0.00, Squared loss: 0.08, Entropy loss: 0.69, Avg Rewards: -4.96, Time elapsed: 42.73s
+[Model 12417] Epoch: 1500, L_clip: -0.00, Squared loss: 0.10, Entropy loss: 0.69, Avg Rewards: -4.97, Time elapsed: 43.64s
+[Model 12418] Epoch: 1600, L_clip: -0.00, Squared loss: 0.09, Entropy loss: 0.69, Avg Rewards: -4.98, Time elapsed: 44.25s
+[Model 12421] Epoch: 1600, L_clip: 0.00, Squared loss: 0.08, Entropy loss: 0.69, Avg Rewards: -4.98, Time elapsed: 44.61s
+[Model 12420] Epoch: 1600, L_clip: 0.00, Squared loss: 0.10, Entropy loss: 0.69, Avg Rewards: -4.96, Time elapsed: 45.09s
+[Model 12419] Epoch: 1600, L_clip: -0.00, Squared loss: 0.07, Entropy loss: 0.69, Avg Rewards: -4.98, Time elapsed: 45.43s
+[Model 12417] Epoch: 1600, L_clip: 0.01, Squared loss: 0.07, Entropy loss: 0.69, Avg Rewards: -4.98, Time elapsed: 46.40s
+[Model 12418] Epoch: 1700, L_clip: 0.00, Squared loss: 0.06, Entropy loss: 0.69, Avg Rewards: -4.97, Time elapsed: 46.90s
+[Model 12421] Epoch: 1700, L_clip: -0.01, Squared loss: 0.08, Entropy loss: 0.69, Avg Rewards: -4.97, Time elapsed: 47.28s
+[Model 12420] Epoch: 1700, L_clip: -0.00, Squared loss: 0.06, Entropy loss: 0.69, Avg Rewards: -4.97, Time elapsed: 47.74s
+[Model 12419] Epoch: 1700, L_clip: 0.00, Squared loss: 0.06, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 48.10s
+[Model 12417] Epoch: 1700, L_clip: -0.01, Squared loss: 0.09, Entropy loss: 0.69, Avg Rewards: -4.98, Time elapsed: 49.16s
+[Model 12418] Epoch: 1800, L_clip: -0.00, Squared loss: 0.06, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 49.54s
+[Model 12421] Epoch: 1800, L_clip: 0.00, Squared loss: 0.06, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 49.97s
+[Model 12420] Epoch: 1800, L_clip: -0.00, Squared loss: 0.05, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 50.40s
+[Model 12419] Epoch: 1800, L_clip: -0.01, Squared loss: 0.10, Entropy loss: 0.69, Avg Rewards: -4.96, Time elapsed: 50.90s
+[Model 12417] Epoch: 1800, L_clip: -0.00, Squared loss: 0.08, Entropy loss: 0.69, Avg Rewards: -4.98, Time elapsed: 52.11s
+[Model 12418] Epoch: 1900, L_clip: 0.00, Squared loss: 0.05, Entropy loss: 0.69, Avg Rewards: -5.00, Time elapsed: 52.34s
+[Model 12421] Epoch: 1900, L_clip: -0.00, Squared loss: 0.05, Entropy loss: 0.69, Avg Rewards: -5.00, Time elapsed: 52.77s
+[Model 12420] Epoch: 1900, L_clip: 0.01, Squared loss: 0.06, Entropy loss: 0.69, Avg Rewards: -4.98, Time elapsed: 53.21s
+[Model 12419] Epoch: 1900, L_clip: 0.00, Squared loss: 0.08, Entropy loss: 0.69, Avg Rewards: -4.97, Time elapsed: 53.70s
+[Model 12417] Epoch: 1900, L_clip: -0.00, Squared loss: 0.11, Entropy loss: 0.69, Avg Rewards: -4.95, Time elapsed: 54.93s
+[Model 12418] Epoch: 2000, L_clip: -0.00, Squared loss: 0.08, Entropy loss: 0.69, Avg Rewards: -4.98, Time elapsed: 55.04s
+[Model 12421] Epoch: 2000, L_clip: 0.00, Squared loss: 0.07, Entropy loss: 0.69, Avg Rewards: -4.98, Time elapsed: 55.47s
+[Model 12420] Epoch: 2000, L_clip: -0.00, Squared loss: 0.05, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 55.90s
+[Model 12419] Epoch: 2000, L_clip: 0.00, Squared loss: 0.06, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 56.42s
+[Model 12418] Epoch: 2100, L_clip: 0.01, Squared loss: 0.06, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 57.67s
+[Model 12417] Epoch: 2000, L_clip: -0.00, Squared loss: 0.06, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 57.70s
+[Model 12421] Epoch: 2100, L_clip: -0.01, Squared loss: 0.04, Entropy loss: 0.69, Avg Rewards: -5.00, Time elapsed: 58.10s
+[Model 12420] Epoch: 2100, L_clip: -0.00, Squared loss: 0.08, Entropy loss: 0.69, Avg Rewards: -4.97, Time elapsed: 58.63s
+[Model 12419] Epoch: 2100, L_clip: -0.00, Squared loss: 0.05, Entropy loss: 0.69, Avg Rewards: -5.00, Time elapsed: 59.16s
+[Model 12418] Epoch: 2200, L_clip: -0.00, Squared loss: 0.05, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 60.39s
+[Model 12417] Epoch: 2100, L_clip: -0.00, Squared loss: 0.06, Entropy loss: 0.69, Avg Rewards: -4.98, Time elapsed: 60.57s
+[Model 12421] Epoch: 2200, L_clip: 0.01, Squared loss: 0.06, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 60.87s
+[Model 12420] Epoch: 2200, L_clip: 0.00, Squared loss: 0.06, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 61.42s
+[Model 12419] Epoch: 2200, L_clip: -0.00, Squared loss: 0.07, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 61.93s
+[Model 12418] Epoch: 2300, L_clip: 0.00, Squared loss: 0.07, Entropy loss: 0.69, Avg Rewards: -4.98, Time elapsed: 63.06s
+[Model 12417] Epoch: 2200, L_clip: -0.00, Squared loss: 0.08, Entropy loss: 0.69, Avg Rewards: -4.97, Time elapsed: 63.38s
+[Model 12421] Epoch: 2300, L_clip: -0.00, Squared loss: 0.10, Entropy loss: 0.69, Avg Rewards: -4.96, Time elapsed: 63.55s
+[Model 12420] Epoch: 2300, L_clip: -0.00, Squared loss: 0.06, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 64.14s
+[Model 12419] Epoch: 2300, L_clip: 0.00, Squared loss: 0.11, Entropy loss: 0.69, Avg Rewards: -4.95, Time elapsed: 64.65s
+[Model 12418] Epoch: 2400, L_clip: -0.00, Squared loss: 0.06, Entropy loss: 0.69, Avg Rewards: -4.98, Time elapsed: 65.77s
+[Model 12421] Epoch: 2400, L_clip: -0.01, Squared loss: 0.06, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 66.24s
+[Model 12417] Epoch: 2300, L_clip: 0.00, Squared loss: 0.10, Entropy loss: 0.69, Avg Rewards: -4.97, Time elapsed: 66.25s
+[Model 12420] Epoch: 2400, L_clip: -0.01, Squared loss: 0.06, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 66.86s
+[Model 12419] Epoch: 2400, L_clip: -0.00, Squared loss: 0.08, Entropy loss: 0.69, Avg Rewards: -4.98, Time elapsed: 67.39s
+[Model 12418] Epoch: 2500, L_clip: 0.00, Squared loss: 0.11, Entropy loss: 0.69, Avg Rewards: -4.95, Time elapsed: 68.44s
+[Model 12421] Epoch: 2500, L_clip: 0.00, Squared loss: 0.08, Entropy loss: 0.69, Avg Rewards: -4.97, Time elapsed: 68.84s
+[Model 12417] Epoch: 2400, L_clip: 0.00, Squared loss: 0.06, Entropy loss: 0.69, Avg Rewards: -4.98, Time elapsed: 68.95s
+[Model 12420] Epoch: 2500, L_clip: 0.01, Squared loss: 0.06, Entropy loss: 0.69, Avg Rewards: -4.99, Time elapsed: 69.36s
+[Model 12419] Epoch: 2500, L_clip: 0.01, Squared loss: 0.06, Entropy loss: 0.69, Avg Rewards: -4.98, Time elapsed: 69.78s
+[Model 12417] Epoch: 2500, L_clip: -0.00, Squared loss: 0.07, Entropy loss: 0.69, Avg Rewards: -4.98, Time elapsed: 70.78s
+
+All 5 models finished in 72.8s
+Plots saved to parallel_results 4.png
+
+No model reached 0 avg reward.
+
+Best single-epoch reward: Model1 with reward -3.00
+  Layers: 5, Specs: [[8, 1024], [1024, 128], [128, 16], [16, 256], [256, 256]]
+
+--- Model Ranking ---
+       Model  Layers                          Architecture Best Reward Final Avg Reward (last 100) Epoch to 0 Reward
+Rank
+1     Model0       5  8 -> 1024 -> 128 -> 16 -> 256 -> 256        -4.0                        -5.0             Never
+2     Model1       5  8 -> 1024 -> 128 -> 16 -> 256 -> 256        -3.0                        -5.0             Never
+3     Model2       5  8 -> 1024 -> 128 -> 16 -> 256 -> 256        -4.0                        -5.0             Never
+4     Model3       5  8 -> 1024 -> 128 -> 16 -> 256 -> 256        -3.0                        -5.0             Never
+5     Model4       5  8 -> 1024 -> 128 -> 16 -> 256 -> 256        -4.0                        -5.0             Never
+
+Process finished with exit code 0

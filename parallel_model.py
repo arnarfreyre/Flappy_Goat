@@ -16,17 +16,6 @@ from ple.games.flappybird import FlappyBird
 # noinspection PyUnresolvedReferences
 from ple import PLE
 
-# Hyperparameters
-lr = 0.0001
-epsilon = 0.1
-gamma = 0.99
-c0 = 1
-c1 = 0.01
-c2 = 0.1
-epochs = 3000
-K_epochs = 5
-Total_random_runs = 10
-
 
 class PPO_Flappy(nn.Module):
 
@@ -56,7 +45,7 @@ def normalize_game_state(state):
     return (state - means) / stds
 
 
-def get_Advantage(states, rewards, model):
+def get_Advantage(states, rewards, model, gamma):
     with torch.no_grad():
         _,prev_values = model(states)
 
@@ -73,48 +62,18 @@ def get_Advantage(states, rewards, model):
     return A, returns
 
 
-def get_children():
-    total_layers = 5
-    input_layer = 8
-    layer_specs = []
-    layer_setup = [[8, 512], [512, 128], [128, 8], [8, 256], [256, 512]]
+def Train_Network(model, optimizer, config, model_index):
+    epochs = config["epochs"]
+    K_epochs = config["K_epochs"]
+    epsilon = config["epsilon"]
+    gamma = config["gamma"]
+    c0 = config["c0"]
+    c1 = config["c1"]
+    c2 = config["c2"]
 
-    layer_specs.append([input_layer,int(layer_setup[0][1]*2**(random.randint(-1,1)))])
-    for i in range(total_layers-1):
-        layer_specs.append([layer_specs[i][1],int(layer_setup[i+1][1]*2**(random.randint(-1,1)))])
-    return total_layers,layer_specs
-
-
-def get_random_layers():
-    input_layer = 8
-    total_layers = random.randint(1, 8)
-    layer_specs = []
-    layer_specs.append([input_layer, 2 ** (3 + random.randint(1, 8))])
-
-    for i in range(total_layers - 1):
-        layer_specs.append([layer_specs[i][1], int(layer_specs[i][1]*2 ** (random.randint(-2, 2)))])
-
-    total_size = 0
-    for i in layer_specs:
-        size = i[0]*i[1] + i[1]
-        total_size += size
-
-    print(f"Total Network Size: {total_size}")
-
-    return total_layers, layer_specs
-
-def determined_network():
-    total_layers = 5
-    layer_specs = [[8, 1024], [1024, 128], [128, 16], [16, 256], [256, 256]]
-
-
-    return total_layers,layer_specs
-
-def Train_Network(model, optimizer, epochs):
-    print_freq = 100
-
-    start_time = time.time()
     game = FlappyBird()
+    last_print_time = time.time()
+    max_reward = -float("inf")
 
     total_rewards = []
     all_L_clip = []
@@ -141,7 +100,6 @@ def Train_Network(model, optimizer, epochs):
             dist = torch.distributions.Categorical(action_prob)
             action = dist.sample()
 
-            critic_val = critic_val.detach().squeeze()
 
             if action == 0:
                 ret_action = p.getActionSet()[0]
@@ -151,7 +109,6 @@ def Train_Network(model, optimizer, epochs):
             reward = p.act(ret_action)
 
             log_probs.append(dist.log_prob(action))
-            values.append(critic_val)
             rewards.append(reward)
             actions.append(action)
             states.append(game_state)
@@ -162,10 +119,9 @@ def Train_Network(model, optimizer, epochs):
 
         total_rewards.append(sum(rewards))
         states = torch.stack(states).squeeze()
-        values = torch.stack(values).squeeze()
         log_probs = torch.stack(log_probs).squeeze()
         actions = torch.stack(actions).squeeze()
-        A, returns = get_Advantage(states, rewards, model)
+        A, returns = get_Advantage(states, rewards, model, gamma)
 
         for j in range(K_epochs):
             action_probs,new_values = model(states)
@@ -179,7 +135,9 @@ def Train_Network(model, optimizer, epochs):
             L_vf = ((new_values.squeeze() - returns.squeeze())**2)*c1
             entropy_bonus = (new_dist.entropy())*c2
 
-            loss = -(c0*L_clip-c1*L_vf+c2*entropy_bonus).mean()
+
+            #loss = -(c0*L_clip-c1*L_vf+c2*entropy_bonus).mean()
+            loss = -(L_clip - L_vf + entropy_bonus).mean()
 
             all_L_clip.append(L_clip.mean().item())
             all_L_vf.append(L_vf.mean().item())
@@ -200,35 +158,26 @@ def Train_Network(model, optimizer, epochs):
             "L_entropy": epoch_L_entropy,
         })
 
-        if (i+1) % print_freq == 0:
-            current_time = time.time()
-            elapsed_time = current_time - start_time
-            epoch_num = i+1
-            n_recent = int(K_epochs*print_freq)
-            avg_reward = sum(total_rewards[-print_freq:]) /len(total_rewards[-print_freq:])
-            L_clip_mean = sum(all_L_clip[-n_recent:]) / len(all_L_clip[-n_recent:])
-            L_vf_mean = sum(all_L_vf[-n_recent:]) / len(all_L_vf[-n_recent:])
-            L_entr_mean = sum(all_L_entropy[-n_recent:]) / len(all_L_entropy[-n_recent:])
-            print(f"[Model {os.getpid()}] Epoch: {epoch_num}, "
-                  f"L_clip: {L_clip_mean:.2f}, "
-                  f"Squared loss: {L_vf_mean:.2f}, "
-                  f"Entropy loss: {L_entr_mean:.2f}, "
-                  f"Avg Rewards: {avg_reward:.2f}, "
-                  f"Time elapsed: {elapsed_time:.2f}s")
+        if total_rewards[-1] > max_reward:
+            max_reward = total_rewards[-1]
+
+        now = time.time()
+        if now - last_print_time >= 30:
+            pct = int((i + 1) / epochs * 100)
+            print(f"  Model {model_index}: {pct}% ({i+1}/{epochs}), max reward: {max_reward:.1f}", flush=True)
+            last_print_time = now
 
     return pd.DataFrame(stats_rows)
 
 
-def train_one_model(model_index):
-    total_layers, layer_specs = determined_network()
-    print(f"[Model{model_index}] Layers: {total_layers}, Setup: {layer_specs}", flush=True)
+def train_one_model(args):
+    model_index, layer_specs, config = args
+    total_layers = len(layer_specs)
 
     model = PPO_Flappy(total_layers, layer_specs)
-    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+    optimizer = torch.optim.Adam(model.parameters(), lr=config["lr"])
 
-    stats = Train_Network(model, optimizer, epochs)
-    model_str = "flappy weights/Parallel " + str(random.randint(0,100000000))+".pt"
-    torch.save(model.state_dict(), model_str)
+    stats = Train_Network(model, optimizer, config, model_index)
     return {
         "Stats": stats,
         "Total layers": total_layers,
@@ -236,114 +185,80 @@ def train_one_model(model_index):
     }
 
 
+def save_run_results(results, model_architectures, config, filepath):
+    with open(filepath, "w") as f:
+        f.write(f"# Config: lr={config['lr']}, epochs={config['epochs']}, "
+                f"K_epochs={config['K_epochs']}, epsilon={config['epsilon']}, "
+                f"gamma={config['gamma']}, c0={config['c0']}, c1={config['c1']}, c2={config['c2']}\n")
+        for i, arch in enumerate(model_architectures):
+            f.write(f"# Model{i}: layers={arch}\n")
+        f.write("model,epoch,reward,L_clip,L_vf,L_entropy\n")
+        for i, result in enumerate(results):
+            df = result["Stats"]
+            for _, row in df.iterrows():
+                f.write(f"Model{i},{int(row['epoch'])},{row['reward']},{row['L_clip']},{row['L_vf']},{row['L_entropy']}\n")
+
+
+def run_config():
+    l1 = [[8, 1024], [1024, 512], [512, 2048]]
+    l2 = [[8, 1024], [1024, 128], [128, 16], [16, 256], [256, 256]]
+    l3 = [[8, 64], [64, 128], [128, 128]]
+    l4 = [[8, 16], [1024, 1024], [1024, 256]]
+    l5 = [[8, 512], [512, 64], [64, 256], [256, 256], [256, 256]]
+    l6 = [[8, 16], [16, 8], [8, 16], [16, 8], [8, 16]]
+    l7 = [[8, 1024], [1024, 8], [8, 256], [256, 256]]
+
+    model_architectures = [l1, l2, l3, l4, l5, l6, l7]
+
+    lr_list = [0.0001, 0.001, 0.01]
+    epochs_list = [2000, 2000, 2000]
+    K_epochs_list = [5, 5, 5]
+    epsilon_list = [0.1, 0.1, 0.1]
+    gamma_list = [0.99, 0.99, 0.99]
+    c0_list = [1, 1, 1]
+    c1_list = [0.0001, 0.0001, 0.0001]
+    c2_list = [0.01, 0.01, 0.01]
+    batches = [model_architectures, model_architectures, model_architectures]
+    runs_per_config = [3, 3, 3]
+
+    num_configs = len(lr_list)
+    output_dir = "Multi parallel data"
+    os.makedirs(output_dir, exist_ok=True)
+
+    total_start = time.time()
+    file_count = 0
+
+    for cfg_idx in range(num_configs):
+        config = {
+            "lr": lr_list[cfg_idx],
+            "epochs": epochs_list[cfg_idx],
+            "K_epochs": K_epochs_list[cfg_idx],
+            "epsilon": epsilon_list[cfg_idx],
+            "gamma": gamma_list[cfg_idx],
+            "c0": c0_list[cfg_idx],
+            "c1": c1_list[cfg_idx],
+            "c2": c2_list[cfg_idx],
+        }
+        architectures = batches[cfg_idx]
+
+        for run_idx in range(runs_per_config[cfg_idx]):
+            run_start = time.time()
+            print(f"Config {cfg_idx} (lr={config['lr']}), Run {run_idx} — training {len(architectures)} models...", flush=True)
+
+            jobs = [(i, arch, config) for i, arch in enumerate(architectures)]
+
+            with Pool(len(architectures)) as pool:
+                results = pool.map(train_one_model, jobs)
+
+            elapsed = time.time() - run_start
+            filepath = os.path.join(output_dir, f"config{cfg_idx}_run{run_idx}.txt")
+            save_run_results(results, architectures, config, filepath)
+            file_count += 1
+            print(f"  Saved {filepath} ({elapsed:.1f}s)", flush=True)
+
+    total_elapsed = time.time() - total_start
+    print(f"\nAll done. {file_count} files saved to '{output_dir}/' in {total_elapsed:.1f}s")
+
+
 if __name__ == "__main__":
-    import matplotlib
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-
-    print(f"Starting {Total_random_runs} parallel training runs...")
-    start = time.time()
-
-    with Pool(Total_random_runs) as pool:
-        results = pool.map(train_one_model, range(Total_random_runs))
-
-    elapsed = time.time() - start
-    print(f"\nAll {Total_random_runs} models finished in {elapsed:.1f}s")
-
-    model_dict = {}
-    for i, result in enumerate(results):
-        model_dict[f"Model{i}"] = result
-
-    # --- Plots ---
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(14, 12))
-
-    for name, data in model_dict.items():
-        df = data["Stats"]
-        sizes = " -> ".join([str(s[1]) for s in data["Layer specs"]])
-        label = f"{name} ({data['Total layers']}L: {sizes})"
-        ax1.plot(df["epoch"], df["L_clip"], label=label, alpha=0.8)
-
-    ax1.set_xlabel("Epoch")
-    ax1.set_ylabel("L_clip Loss")
-    ax1.set_title("Clipping Loss per Model")
-    ax1.legend(fontsize=7, loc="best")
-    ax1.set_xlim(0, epochs)
-    ax1.grid(True, alpha=0.3)
-
-    for name, data in model_dict.items():
-        df = data["Stats"]
-        sizes = " -> ".join([str(s[1]) for s in data["Layer specs"]])
-        label = f"{name} ({data['Total layers']}L: {sizes})"
-        ax2.plot(df["epoch"], df["reward"].rolling(50, min_periods=1).mean(), label=label, alpha=0.8)
-
-    ax2.set_xlabel("Epoch")
-    ax2.set_ylabel("Avg Reward (rolling 50)")
-    ax2.set_title("Reward per Model")
-    ax2.legend(fontsize=7, loc="best")
-    ax2.set_xlim(0, epochs)
-    ax2.axhline(y=0, color="black", linestyle="--", alpha=0.4)
-    ax2.grid(True, alpha=0.3)
-
-    plt.tight_layout()
-    plt.savefig("parallel_results.png", dpi=150)
-    print("Plots saved to parallel_results.png")
-
-    # --- Fastest to 0 avg reward ---
-    fastest_model = None
-    fastest_epoch = float("inf")
-
-    for name, data in model_dict.items():
-        df = data["Stats"]
-        rolling_reward = df["reward"].rolling(50, min_periods=1).mean()
-        reached = rolling_reward[rolling_reward >= 0]
-        if len(reached) > 0:
-            epoch = df.loc[reached.index[0], "epoch"]
-            if epoch < fastest_epoch:
-                fastest_epoch = epoch
-                fastest_model = name
-
-    if fastest_model:
-        d = model_dict[fastest_model]
-        print(f"\nFastest to 0 avg reward: {fastest_model} at epoch {fastest_epoch}")
-        print(f"  Layers: {d['Total layers']}, Specs: {d['Layer specs']}")
-    else:
-        print("\nNo model reached 0 avg reward.")
-
-    # --- Best overall score ---
-    best_model = None
-    best_reward = -float("inf")
-
-    for name, data in model_dict.items():
-        max_reward = data["Stats"]["reward"].max()
-        if max_reward > best_reward:
-            best_reward = max_reward
-            best_model = name
-
-    d = model_dict[best_model]
-    print(f"\nBest single-epoch reward: {best_model} with reward {best_reward:.2f}")
-    print(f"  Layers: {d['Total layers']}, Specs: {d['Layer specs']}")
-
-    # --- Ranking table ---
-    rows = []
-    for name, data in model_dict.items():
-        df = data["Stats"]
-        rolling_reward = df["reward"].rolling(50, min_periods=1).mean()
-        reached = rolling_reward[rolling_reward >= 0]
-        epoch_to_zero = int(df.loc[reached.index[0], "epoch"]) if len(reached) > 0 else None
-        sizes = " -> ".join([str(s[1]) for s in data["Layer specs"]])
-
-        rows.append({
-            "Model": name,
-            "Layers": data["Total layers"],
-            "Architecture": f"8 -> {sizes}",
-            "Best Reward": f"{df['reward'].max():.1f}",
-            "Final Avg Reward (last 100)": f"{df['reward'].tail(100).mean():.1f}",
-            "Epoch to 0 Reward": epoch_to_zero if epoch_to_zero else "Never",
-        })
-
-    ranking = pd.DataFrame(rows)
-    ranking = ranking.sort_values("Final Avg Reward (last 100)", ascending=False, key=lambda x: pd.to_numeric(x, errors="coerce")).reset_index(drop=True)
-    ranking.index = ranking.index + 1
-    ranking.index.name = "Rank"
-    print("\n--- Model Ranking ---")
-    print(ranking.to_string())
+    run_config()

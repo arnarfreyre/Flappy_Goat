@@ -1,7 +1,7 @@
 try:
     from .doom import Doom
 except:
-    print("Couldn't import doom")
+    a = 1
 from .catcher import Catcher
 from .flappybird import FlappyBird
 from .monsterkong import MonsterKong
