@@ -8,6 +8,7 @@ import time
 import sys
 import os
 from multiprocessing import Pool
+from openpyxl import Workbook
 
 os.environ['SDL_VIDEODRIVER'] = 'dummy'
 sys.path.insert(0, 'itml-project2')
@@ -164,7 +165,7 @@ def Train_Network(model, optimizer, config, model_index):
         now = time.time()
         if now - last_print_time >= 30:
             pct = int((i + 1) / epochs * 100)
-            print(f"  Model {model_index}: {pct}% ({i+1}/{epochs}), max reward: {max_reward:.1f}", flush=True)
+            print(f"Model {model_index}: {pct}% ({i+1}/{epochs}), max reward: {max_reward:.1f}", flush=True)
             last_print_time = now
 
     return pd.DataFrame(stats_rows)
@@ -174,41 +175,72 @@ def train_one_model(args):
     model_index, layer_specs, config = args
     total_layers = len(layer_specs)
 
-    model = PPO_Flappy(total_layers, layer_specs)
-    optimizer = torch.optim.Adam(model.parameters(), lr=config["lr"])
+    try:
+        model = PPO_Flappy(total_layers, layer_specs)
+        optimizer = torch.optim.Adam(model.parameters(), lr=config["lr"])
 
-    stats = Train_Network(model, optimizer, config, model_index)
-    return {
-        "Stats": stats,
-        "Total layers": total_layers,
-        "Layer specs": layer_specs,
-    }
+        stats = Train_Network(model, optimizer, config, model_index)
+        print(f"Model {model_index} complete", flush=True)
+        return {
+            "Stats": stats,
+            "Total layers": total_layers,
+            "Layer specs": layer_specs,
+        }
+    except Exception as e:
+        print(f"Model {model_index} FAILED: {e}", flush=True)
+        return {
+            "Stats": pd.DataFrame(),
+            "Total layers": total_layers,
+            "Layer specs": layer_specs,
+        }
 
 
 def save_run_results(results, model_architectures, config, filepath):
-    with open(filepath, "w") as f:
-        f.write(f"# Config: lr={config['lr']}, epochs={config['epochs']}, "
-                f"K_epochs={config['K_epochs']}, epsilon={config['epsilon']}, "
-                f"gamma={config['gamma']}, c0={config['c0']}, c1={config['c1']}, c2={config['c2']}\n")
-        for i, arch in enumerate(model_architectures):
-            f.write(f"# Model{i}: layers={arch}\n")
-        f.write("model,epoch,reward,L_clip,L_vf,L_entropy\n")
-        for i, result in enumerate(results):
-            df = result["Stats"]
-            for _, row in df.iterrows():
-                f.write(f"Model{i},{int(row['epoch'])},{row['reward']},{row['L_clip']},{row['L_vf']},{row['L_entropy']}\n")
+    wb = Workbook()
+
+    # Config sheet
+    ws_config = wb.active
+    ws_config.title = "Config"
+    config_rows = [
+        ("lr", config["lr"]),
+        ("epochs", config["epochs"]),
+        ("K_epochs", config["K_epochs"]),
+        ("epsilon", config["epsilon"]),
+        ("gamma", config["gamma"]),
+        ("c0", config["c0"]),
+        ("c1", config["c1"]),
+        ("c2", config["c2"]),
+    ]
+    for i, arch in enumerate(model_architectures):
+        config_rows.append((f"Model {i} architecture", str(arch)))
+    for row in config_rows:
+        ws_config.append(row)
+
+    # Per-model sheets
+    for i, result in enumerate(results):
+        ws = wb.create_sheet(title=f"Model {i}")
+        ws.append(["epoch", "reward", "L_clip", "L_vf", "L_entropy"])
+        df = result["Stats"]
+        for _, row in df.iterrows():
+            ws.append([int(row["epoch"]), row["reward"], row["L_clip"], row["L_vf"], row["L_entropy"]])
+
+    wb.save(filepath)
 
 
 def run_config():
-    l1 = [[8, 1024], [1024, 512], [512, 2048]]
-    l2 = [[8, 1024], [1024, 128], [128, 16], [16, 256], [256, 256]]
-    l3 = [[8, 64], [64, 128], [128, 128]]
-    l4 = [[8, 16], [1024, 1024], [1024, 256]]
-    l5 = [[8, 512], [512, 64], [64, 256], [256, 256], [256, 256]]
-    l6 = [[8, 16], [16, 8], [8, 16], [16, 8], [8, 16]]
-    l7 = [[8, 1024], [1024, 8], [8, 256], [256, 256]]
+    l0 = [[8, 1024], [1024, 512], [512, 2048]]
+    l1 = [[8, 2048], [2048, 512], [512, 2048]]
+    l2 = [[8, 1024], [1024, 512], [512, 256],[256, 256],[256,512],[512,1024]]
+    l3 = [[8, 1024], [1024, 128], [128, 16], [16, 128], [128, 256]]
 
-    model_architectures = [l1, l2, l3, l4, l5, l6, l7]
+    l4 = [[8, 512], [512, 64], [64, 256], [256, 256], [256, 256]]
+    l5 = [[8, 16], [16, 8], [8, 16], [16, 8], [8, 16]]
+    l6 = [[8, 1024], [1024, 8], [8, 256], [256, 256]]
+    l7 = [[8, 1024], [1024, 128], [128, 16], [16, 256], [256, 256]]
+    l8 = [[8, 64], [64, 128], [128, 128]]
+    l9 = [[8, 16], [16, 1024], [1024, 256]]
+
+    model_architectures = [l0, l1, l2, l3, l4, l5, l6, l7, l8, l9]
 
     lr_list = [0.0001, 0.001, 0.01]
     epochs_list = [2000, 2000, 2000]
@@ -251,7 +283,7 @@ def run_config():
                 results = pool.map(train_one_model, jobs)
 
             elapsed = time.time() - run_start
-            filepath = os.path.join(output_dir, f"config{cfg_idx}_run{run_idx}.txt")
+            filepath = os.path.join(output_dir, f"config{cfg_idx}_run{run_idx}.xlsx")
             save_run_results(results, architectures, config, filepath)
             file_count += 1
             print(f"  Saved {filepath} ({elapsed:.1f}s)", flush=True)
