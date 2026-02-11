@@ -1,0 +1,181 @@
+################################################################################
+# PPO HYPERPARAMETER SWEEP — CONFIG BATCHES
+#
+# Each batch is a copy-paste replacement for the config lists in run_config()
+# in parallel_model.py (lines 245–254).
+#
+# Fixed across all batches:
+#   epochs_list  = 2000   (constant)
+#   c0_list      = 1      (constant)
+#   batches      = model_architectures (all 10 architectures)
+#   runs_per_config = 3   (statistical confidence)
+#
+# Baseline (held constant while sweeping one variable):
+#   lr=1e-4, K=5, eps=0.2, gamma=0.99, c1=0.001, c2=0.01
+#
+# Total: ~54 configs x 3 runs = ~162 runs across 9 batches
+################################################################################
+
+
+# ==============================================================================
+# BATCH 1: Learning Rate Sweep (8 configs)
+# Sweeping: lr ∈ {1e-6, 5e-6, 1e-5, 5e-5, 1e-4, 5e-4, 1e-3, 3e-3}
+# ==============================================================================
+    lr_list =           [0.000001, 0.000005, 0.00001, 0.00005, 0.0001, 0.0005, 0.001, 0.003]
+    epochs_list =       [2000,     2000,     2000,    2000,    2000,   2000,   2000,  2000]
+    K_epochs_list =     [5,        5,        5,       5,       5,      5,      5,     5]
+    epsilon_list =      [0.2,      0.2,      0.2,     0.2,     0.2,    0.2,    0.2,   0.2]
+    gamma_list =        [0.99,     0.99,     0.99,    0.99,    0.99,   0.99,   0.99,  0.99]
+    c0_list =           [1,        1,        1,       1,       1,      1,      1,     1]
+    c1_list =           [0.001,    0.001,    0.001,   0.001,   0.001,  0.001,  0.001, 0.001]
+    c2_list =           [0.01,     0.01,     0.01,    0.01,    0.01,   0.01,   0.01,  0.01]
+    batches =           [model_architectures]*8
+    runs_per_config =   [3,        3,        3,       3,       3,      3,      3,     3]
+
+
+Done
+# ==============================================================================
+# BATCH 2: K_epochs Sweep (7 configs)
+# Sweeping: K ∈ {1, 3, 5, 8, 10, 15, 20}
+# ==============================================================================
+    lr_list =           [0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001]
+    epochs_list =       [2000,   2000,   2000,   2000,   2000,   2000,   2000]
+    K_epochs_list =     [1,      3,      5,      8,      10,     15,     20]
+    epsilon_list =      [0.2,    0.2,    0.2,    0.2,    0.2,    0.2,    0.2]
+    gamma_list =        [0.99,   0.99,   0.99,   0.99,   0.99,   0.99,   0.99]
+    c0_list =           [1,      1,      1,      1,      1,      1,      1]
+    c1_list =           [0.001,  0.001,  0.001,  0.001,  0.001,  0.001,  0.001]
+    c2_list =           [0.01,   0.01,   0.01,   0.01,   0.01,   0.01,   0.01]
+    batches =           [model_architectures]*7
+    runs_per_config =   [3,      3,      3,      3,      3,      3,      3]
+
+Done
+# ==============================================================================
+# BATCH 3: Epsilon / Clip Range Sweep (7 configs)
+# Sweeping: eps ∈ {0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4}
+# ==============================================================================
+    lr_list =           [0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001]
+    epochs_list =       [2000,   2000,   2000,   2000,   2000,   2000,   2000]
+    K_epochs_list =     [5,      5,      5,      5,      5,      5,      5]
+    epsilon_list =      [0.05,   0.1,    0.15,   0.2,    0.25,   0.3,    0.4]
+    gamma_list =        [0.99,   0.99,   0.99,   0.99,   0.99,   0.99,   0.99]
+    c0_list =           [1,      1,      1,      1,      1,      1,      1]
+    c1_list =           [0.001,  0.001,  0.001,  0.001,  0.001,  0.001,  0.001]
+    c2_list =           [0.01,   0.01,   0.01,   0.01,   0.01,   0.01,   0.01]
+    batches =           [model_architectures]*7
+    runs_per_config =   [3,      3,      3,      3,      3,      3,      3]
+
+Done
+# ==============================================================================
+# BATCH 4: Gamma / Discount Factor Sweep (6 configs)
+# Sweeping: gamma ∈ {0.9, 0.95, 0.97, 0.99, 0.995, 0.999}
+# ==============================================================================
+    lr_list =           [0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001]
+    epochs_list =       [2000,   2000,   2000,   2000,   2000,   2000]
+    K_epochs_list =     [5,      5,      5,      5,      5,      5]
+    epsilon_list =      [0.2,    0.2,    0.2,    0.2,    0.2,    0.2]
+    gamma_list =        [0.9,    0.95,   0.97,   0.99,   0.995,  0.999]
+    c0_list =           [1,      1,      1,      1,      1,      1]
+    c1_list =           [0.001,  0.001,  0.001,  0.001,  0.001,  0.001]
+    c2_list =           [0.01,   0.01,   0.01,   0.01,   0.01,   0.01]
+    batches =           [model_architectures]*6
+    runs_per_config =   [3,      3,      3,      3,      3,      3]
+
+
+# ==============================================================================
+# BATCH 5: c1 / Value Loss Coefficient Sweep (7 configs)
+# Sweeping: c1 ∈ {1e-5, 1e-4, 1e-3, 0.01, 0.1, 0.5, 1.0}
+# ==============================================================================
+    lr_list =           [0.0001,  0.0001,  0.0001, 0.0001, 0.0001, 0.0001, 0.0001]
+    epochs_list =       [2000,    2000,    2000,   2000,   2000,   2000,   2000]
+    K_epochs_list =     [5,       5,       5,      5,      5,      5,      5]
+    epsilon_list =      [0.2,     0.2,     0.2,    0.2,    0.2,    0.2,    0.2]
+    gamma_list =        [0.99,    0.99,    0.99,   0.99,   0.99,   0.99,   0.99]
+    c0_list =           [1,       1,       1,      1,      1,      1,      1]
+    c1_list =           [0.00001, 0.0001,  0.001,  0.01,   0.1,    0.5,    1.0]
+    c2_list =           [0.01,    0.01,    0.01,   0.01,   0.01,   0.01,   0.01]
+    batches =           [model_architectures]*7
+    runs_per_config =   [3,       3,       3,      3,      3,      3,      3]
+
+
+# ==============================================================================
+# BATCH 6: c2 / Entropy Coefficient Sweep (7 configs)
+# Sweeping: c2 ∈ {0.001, 0.005, 0.01, 0.02, 0.05, 0.1, 0.2}
+# ==============================================================================
+    lr_list =           [0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001]
+    epochs_list =       [2000,   2000,   2000,   2000,   2000,   2000,   2000]
+    K_epochs_list =     [5,      5,      5,      5,      5,      5,      5]
+    epsilon_list =      [0.2,    0.2,    0.2,    0.2,    0.2,    0.2,    0.2]
+    gamma_list =        [0.99,   0.99,   0.99,   0.99,   0.99,   0.99,   0.99]
+    c0_list =           [1,      1,      1,      1,      1,      1,      1]
+    c1_list =           [0.001,  0.001,  0.001,  0.001,  0.001,  0.001,  0.001]
+    c2_list =           [0.001,  0.005,  0.01,   0.02,   0.05,   0.1,    0.2]
+    batches =           [model_architectures]*7
+    runs_per_config =   [3,      3,      3,      3,      3,      3,      3]
+
+
+# ==============================================================================
+# BATCH 7: Low LR + High K (4 configs)
+# Explores: slow learning with more optimization steps per update
+# ==============================================================================
+    lr_list =           [0.000005, 0.00001, 0.000005, 0.00001]
+    epochs_list =       [2000,     2000,    2000,     2000]
+    K_epochs_list =     [10,       10,      20,       20]
+    epsilon_list =      [0.2,      0.2,     0.2,      0.2]
+    gamma_list =        [0.99,     0.99,    0.99,     0.99]
+    c0_list =           [1,        1,       1,        1]
+    c1_list =           [0.001,    0.001,   0.001,    0.001]
+    c2_list =           [0.01,     0.01,    0.01,     0.01]
+    batches =           [model_architectures]*4
+    runs_per_config =   [3,        3,       3,        3]
+
+
+# ==============================================================================
+# BATCH 8: Aggressive Exploration (4 configs)
+# Explores: wide clip range + high entropy bonus for maximum exploration
+# ==============================================================================
+    lr_list =           [0.0001, 0.0001, 0.0005, 0.0005]
+    epochs_list =       [2000,   2000,   2000,   2000]
+    K_epochs_list =     [5,      5,      5,      5]
+    epsilon_list =      [0.3,    0.4,    0.3,    0.4]
+    gamma_list =        [0.99,   0.99,   0.99,   0.99]
+    c0_list =           [1,      1,      1,      1]
+    c1_list =           [0.001,  0.001,  0.001,  0.001]
+    c2_list =           [0.1,    0.1,    0.2,    0.2]
+    batches =           [model_architectures]*4
+    runs_per_config =   [3,      3,      3,      3]
+
+
+# ==============================================================================
+# BATCH 9: Fine-Tuning Sweet Spot (4 configs)
+# Explores: mid-range lr with varied gamma and epsilon
+# ==============================================================================
+    lr_list =           [0.00005, 0.00005, 0.0001, 0.0001]
+    epochs_list =       [2000,    2000,    2000,   2000]
+    K_epochs_list =     [5,       8,       5,      8]
+    epsilon_list =      [0.15,    0.2,     0.15,   0.2]
+    gamma_list =        [0.995,   0.995,   0.97,   0.97]
+    c0_list =           [1,       1,       1,      1]
+    c1_list =           [0.001,   0.001,   0.001,  0.001]
+    c2_list =           [0.01,    0.01,    0.01,   0.01]
+    batches =           [model_architectures]*4
+    runs_per_config =   [3,       3,       3,      3]
+
+
+################################################################################
+# SUMMARY
+#
+# Batch 1: Learning Rate          — 8 configs x 3 runs = 24 runs
+# Batch 2: K_epochs               — 7 configs x 3 runs = 21 runs
+# Batch 3: Epsilon (clip range)   — 7 configs x 3 runs = 21 runs
+# Batch 4: Gamma (discount)       — 6 configs x 3 runs = 18 runs
+# Batch 5: c1 (value loss coeff)  — 7 configs x 3 runs = 21 runs
+# Batch 6: c2 (entropy coeff)     — 7 configs x 3 runs = 21 runs
+# Batch 7: Low LR + High K        — 4 configs x 3 runs = 12 runs
+# Batch 8: Aggressive Exploration  — 4 configs x 3 runs = 12 runs
+# Batch 9: Fine-Tuning Sweet Spot  — 4 configs x 3 runs = 12 runs
+# ─────────────────────────────────────────────────────────────────
+# TOTAL: 54 configs x 3 runs = 162 runs
+#
+# Each run trains all 10 model architectures (l0–l9).
+################################################################################
