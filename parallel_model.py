@@ -88,7 +88,6 @@ def Train_Network(model, optimizer, config, model_index):
         p.init()
 
         log_probs = []
-        values = []
         rewards = []
         states = []
         actions = []
@@ -115,6 +114,9 @@ def Train_Network(model, optimizer, config, model_index):
             states.append(game_state)
 
             if p.game_over():
+                done = True
+                p.reset_game()
+            if sum(rewards) >= 1000:
                 done = True
                 p.reset_game()
 
@@ -242,19 +244,20 @@ def run_config():
 
     model_architectures = [l0, l1, l2, l3, l4, l5, l6, l7, l8, l9]
 
-    lr_list = [0.0001, 0.001, 0.01]
-    epochs_list = [2000, 2000, 2000]
-    K_epochs_list = [5, 5, 5]
-    epsilon_list = [0.1, 0.1, 0.1]
-    gamma_list = [0.99, 0.99, 0.99]
-    c0_list = [1, 1, 1]
-    c1_list = [0.0001, 0.0001, 0.0001]
-    c2_list = [0.01, 0.01, 0.01]
-    batches = [model_architectures, model_architectures, model_architectures]
-    runs_per_config = [3, 3, 3]
+    lr_list =           [0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001]
+    epochs_list =       [2000,   2000,   2000,   2000,   2000,   2000]
+    K_epochs_list =     [5,      5,      5,      5,      5,      5]
+    epsilon_list =      [0.2,    0.2,    0.2,    0.2,    0.2,    0.2]
+    gamma_list =        [0.9,    0.95,   0.97,   0.99,   0.995,  0.999]
+    c0_list =           [1,      1,      1,      1,      1,      1]
+    c1_list =           [0.001,  0.001,  0.001,  0.001,  0.001,  0.001]
+    c2_list =           [0.01,   0.01,   0.01,   0.01,   0.01,   0.01]
+    batches =           [model_architectures]*6
+    runs_per_config =   [1,      3,      3,      3,      3,      3]
+
 
     num_configs = len(lr_list)
-    output_dir = "Multi parallel data"
+    output_dir = "Multi parallel data/Run 6 c1"
     os.makedirs(output_dir, exist_ok=True)
 
     total_start = time.time()

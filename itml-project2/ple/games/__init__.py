@@ -1,7 +1,5 @@
-try:
-    from .doom import Doom
-except:
-    a = 1
+
+a = 1
 from .catcher import Catcher
 from .flappybird import FlappyBird
 from .monsterkong import MonsterKong
