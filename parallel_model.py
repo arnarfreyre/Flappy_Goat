@@ -248,12 +248,12 @@ def run_config():
     epochs_list =       [2000,   2000,   2000,   2000,   2000,   2000]
     K_epochs_list =     [5,      5,      5,      5,      5,      5]
     epsilon_list =      [0.2,    0.2,    0.2,    0.2,    0.2,    0.2]
-    gamma_list =        [0.9,    0.95,   0.97,   0.99,   0.995,  0.999]
+    gamma_list =        [0.85,    0.95,   0.97,   0.99,   0.995,  0.999]
     c0_list =           [1,      1,      1,      1,      1,      1]
     c1_list =           [0.001,  0.001,  0.001,  0.001,  0.001,  0.001]
     c2_list =           [0.01,   0.01,   0.01,   0.01,   0.01,   0.01]
     batches =           [model_architectures]*6
-    runs_per_config =   [1,      3,      3,      3,      3,      3]
+    runs_per_config =   [3,      3,      3,      3,      3,      3]
 
 
     num_configs = len(lr_list)
