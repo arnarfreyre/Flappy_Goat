@@ -298,7 +298,7 @@ class FlappyBird(base.PyGameWrapper):
 
     def getGameState(self):
         """
-        Gets a non-visual state representation of the game.
+        Gets a non-visual state r   epresentation of the game.
 
         Returns
         -------
