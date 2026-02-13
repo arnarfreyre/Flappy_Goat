@@ -175,28 +175,30 @@ class FlappyAgent():
             l_clip, l_vf, l_ent, loss = self.train(batch, gamma, lam, clip_eps, clip_coef, value_coef,
                                                     entropy_coef, max_grad_norm, ppo_epochs, minibatch_size,
                                                     ema_alpha, value_loss, normalize_advantage)
-            # Test the exploiting agent
-            test_pipes = 0
-            if test_exploit:
-                for _ in range(3):
-                    test_pipes += self.play_episode(episode, mode='Exploit', max_pipes=10000)
 
+            test_pipes = -1
             # Collect stats
             epoch_pipes.append(avg_pipes)
             epoch_loss_clip.append(l_clip)
             epoch_loss_val.append(l_vf)
             epoch_loss_ent.append(l_ent)
             epoch_loss_tot.append(loss)
-            epoch_test_pipes.append(test_pipes / 3)
+            epoch_test_pipes.append(test_pipes)
 
             # Print stats
             if (epoch + 1) % print_freq == 0:
+                # Test the exploiting agent
+                if test_exploit:
+                    test_pipes = 0
+                    for _ in range(3):
+                        test_pipes += self.play_episode(episode, mode='Exploit', max_pipes=10000)
+                epoch_test_pipes[-1] = test_pipes / 3
+
                 recent_pipes = epoch_pipes[-print_freq:]
                 recent_loss_clip = epoch_loss_clip[-print_freq:]
                 recent_loss_val = epoch_loss_val[-print_freq:]
                 recent_loss_ent = epoch_loss_ent[-print_freq:]
                 recent_loss_tot = epoch_loss_tot[-print_freq:]
-                recent_test_pipes = epoch_test_pipes[-print_freq:]
 
                 if result_path is not None:
                     first_write = (epoch + 1 == print_freq)
@@ -215,7 +217,7 @@ class FlappyAgent():
                       f"L_vf: {sum(recent_loss_val) / len(recent_loss_val):.4f} | "
                       f"L_ent: {sum(recent_loss_ent) / len(recent_loss_ent):.4f} | "
                       f"Loss: {sum(recent_loss_tot) / len(recent_loss_tot):.4f} | "
-                      f"Test Pipes: {sum(recent_test_pipes) / len(recent_test_pipes):7.2f}")
+                      f"Test Pipes: {test_pipes:7.2f}")
 
     def train(self, batch, gamma, lam, clip_eps, clip_coef, value_coef, entropy_coef, max_grad_norm, ppo_epochs, minibatch_size,
               ema_alpha=0.9, value_loss='mse', normalize_advantage=True):
