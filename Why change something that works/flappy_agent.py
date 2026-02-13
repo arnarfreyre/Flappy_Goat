@@ -25,7 +25,7 @@ def state_to_tensor(state):
     return tensor_state
 
 class FlappyNetwork(nn.Module):
-    def __init__(self, hidden_layers, initial_weights=None):
+    def __init__(self, hidden_layers=[64, 64], initial_weights=None):
         super(FlappyNetwork, self).__init__()
         # Hidden layers
         sizes = [8] + hidden_layers
@@ -113,113 +113,80 @@ class FlappyAgent():
                 torch.tensor([float(action), float(reward), float(logp), float(value)],
                              dtype=torch.float32)
                 ]))
-
-            # Count pipes
             if reward > 0:
-                nr_pipes += 1
+                nr_pipes += int(reward)
                 if print_freq is not None and nr_pipes % print_freq == 0:
                     print()
                     print(nr_pipes)
                 if max_pipes is not None and nr_pipes >= max_pipes:
                     break
-
         # Store game experience
         self.memory = torch.stack(game_path)
-        return nr_pipes
+        # return observed_states
 
     # Training functions
     def run_training(self, gamma, lam, clip_eps, clip_coef, value_coef, entropy_coef, max_grad_norm,
                      learning_rate, ppo_epochs, num_epochs, target_steps=800, minibatch_size=128, print_freq=100,
-                     ema_alpha=0.9, value_loss='mse', reward_values=None, normalize_advantage=True, test_exploit=False,
-                     result_path=None):
+                     ema_alpha=0.9, value_loss='mse', reward_values=None, normalize_advantage=True):
         if reward_values is None:
             shift = 5
         else:
             shift = - reward_values['loss']
         self.optimizer = torch.optim.Adam(self.network.parameters(), lr=learning_rate)
 
-        # Start the game
         game = FlappyBird()
         ple_kwargs = dict(fps=30, display_screen=False, force_fps=True)
         if reward_values is not None:
             ple_kwargs['reward_values'] = reward_values
         episode = PLE(game, **ple_kwargs)
         episode.init()
-
-        # Initialize collectors
-        epoch_pipes = []
-        epoch_loss_clip = []
-        epoch_loss_val = []
-        epoch_loss_ent = []
-        epoch_loss_tot = []
-        epoch_test_pipes = []
+        total_rewards = []
+        total_l_clips = []
+        total_l_vfs = []
+        total_l_ents = []
+        total_losses = []
         for epoch in range(num_epochs):
-
             # Anneal learning rate
             lr = learning_rate * (1.0 - epoch / num_epochs)
             for param_group in self.optimizer.param_groups:
                 param_group['lr'] = lr
-
-            # Collect games until target timesteps reached
+            # Collect fresh games until target timesteps reached
             batch = []
-            episode_pipes = []
+            epoch_rewards = []
             total_steps = 0
             while total_steps < target_steps:
-                nr_pipes = self.play_episode(episode, mode='Explore')
+                self.play_episode(episode, mode='Explore')
                 batch.append(self.memory)
-                episode_pipes.append(nr_pipes)
+                epoch_rewards.append(self.memory[:, 9].sum().item())
                 total_steps += self.memory.shape[0]
-            avg_pipes = sum(episode_pipes) / len(episode_pipes)
-
+            total_rewards.append(sum(epoch_rewards) / len(epoch_rewards) + shift)
             # Train on the full batch, then discard
+            # Enable debug diagnostics on print_freq epochs
+            self._debug = ((epoch + 1) % print_freq == 0)
             l_clip, l_vf, l_ent, loss = self.train(batch, gamma, lam, clip_eps, clip_coef, value_coef,
                                                     entropy_coef, max_grad_norm, ppo_epochs, minibatch_size,
                                                     ema_alpha, value_loss, normalize_advantage)
-            # Test the exploiting agent
-            test_pipes = 0
-            if test_exploit:
-                for _ in range(3):
-                    test_pipes += self.play_episode(episode, mode='Exploit', max_pipes=10000)
+            total_l_clips.append(l_clip)
+            total_l_vfs.append(l_vf)
+            total_l_ents.append(l_ent)
+            total_losses.append(loss)
 
-            # Collect stats
-            epoch_pipes.append(avg_pipes)
-            epoch_loss_clip.append(l_clip)
-            epoch_loss_val.append(l_vf)
-            epoch_loss_ent.append(l_ent)
-            epoch_loss_tot.append(loss)
-            epoch_test_pipes.append(test_pipes / 3)
-
-            # Print stats
             if (epoch + 1) % print_freq == 0:
-                recent_pipes = epoch_pipes[-print_freq:]
-                recent_loss_clip = epoch_loss_clip[-print_freq:]
-                recent_loss_val = epoch_loss_val[-print_freq:]
-                recent_loss_ent = epoch_loss_ent[-print_freq:]
-                recent_loss_tot = epoch_loss_tot[-print_freq:]
-                recent_test_pipes = epoch_test_pipes[-print_freq:]
-
-                if result_path is not None:
-                    first_write = (epoch + 1 == print_freq)
-                    pd.DataFrame({
-                        'epoch_pipes': epoch_pipes[-print_freq:],
-                        'epoch_loss_clip': epoch_loss_clip[-print_freq:],
-                        'epoch_loss_val': epoch_loss_val[-print_freq:],
-                        'epoch_loss_ent': epoch_loss_ent[-print_freq:],
-                        'epoch_loss_tot': epoch_loss_tot[-print_freq:],
-                        'epoch_test_pipes': epoch_test_pipes[-print_freq:],
-                    }).to_csv(result_path, index=False, mode='w' if first_write else 'a', header=first_write)
-
+                recent = total_rewards[-print_freq:]
+                avg_pipes = sum(recent) / len(recent)
+                recent_l_clips = total_l_clips[-print_freq:]
+                recent_l_vfs = total_l_vfs[-print_freq:]
+                recent_l_ents = total_l_ents[-print_freq:]
+                recent_losses = total_losses[-print_freq:]
                 print(f"Epoch {epoch+1:5d} | "
-                      f"Avg Pipes: {sum(recent_pipes) / len(recent_pipes):7.2f} | "
-                      f"L_clip: {sum(recent_loss_clip) / len(recent_loss_clip):.4f} | "
-                      f"L_vf: {sum(recent_loss_val) / len(recent_loss_val):.4f} | "
-                      f"L_ent: {sum(recent_loss_ent) / len(recent_loss_ent):.4f} | "
-                      f"Loss: {sum(recent_loss_tot) / len(recent_loss_tot):.4f} | "
-                      f"Test Pipes: {sum(recent_test_pipes) / len(recent_test_pipes):7.2f}")
+                      f"Avg Pipes: {avg_pipes:7.2f} | "
+                      f"L_clip: {sum(recent_l_clips) / len(recent_l_clips):.4f} | "
+                      f"L_vf: {sum(recent_l_vfs) / len(recent_l_vfs):.4f} | "
+                      f"L_ent: {sum(recent_l_ents) / len(recent_l_ents):.4f} | "
+                      f"Loss: {sum(recent_losses) / len(recent_losses):.4f}")
 
     def train(self, batch, gamma, lam, clip_eps, clip_coef, value_coef, entropy_coef, max_grad_norm, ppo_epochs, minibatch_size,
               ema_alpha=0.9, value_loss='mse', normalize_advantage=True):
-
         # Pool all episodes from the batch
         all_states, all_actions, all_logp_old, all_rewards = [], [], [], []
         for ep in batch:
@@ -231,7 +198,8 @@ class FlappyAgent():
         actions = torch.cat(all_actions)
         logp_old = torch.cat(all_logp_old)
 
-        # Use stored V(s) from rollout
+        # Use stored V(s) from rollout (column 11) — identical to recomputing
+        # since the network hasn't been updated yet at this point
         all_values_old = []
         for ep in batch:
             all_values_old.append(ep[:, 11])
@@ -249,12 +217,17 @@ class FlappyAgent():
             offset += ep_len
         advantages = torch.cat(all_adv)
         values_targ = torch.cat(all_vtarg)
-
-        # Normalize advantages
+        # Normalize advantages (zero mean, unit variance)
         if normalize_advantage:
             advantages = (advantages - advantages.mean()) / (advantages.std() + 1e-8)
-
-        # Normalizze values if using normalized_rmse
+        # DEBUG: advantage and value diagnostics
+        if hasattr(self, '_debug') and self._debug:
+            print(f"  [DEBUG] advantages  | mean: {advantages.mean():.4f} | std: {advantages.std():.4f} | min: {advantages.min():.4f} | max: {advantages.max():.4f} | frac>0: {(advantages > 0).float().mean():.2f}", file=sys.stderr)
+            print(f"  [DEBUG] values_targ | mean: {values_targ.mean():.4f} | std: {values_targ.std():.4f} | min: {values_targ.min():.4f} | max: {values_targ.max():.4f}", file=sys.stderr)
+            print(f"  [DEBUG] fresh_vals  | mean: {fresh_values.mean():.4f} | std: {fresh_values.std():.4f} | min: {fresh_values.min():.4f} | max: {fresh_values.max():.4f}", file=sys.stderr)
+            print(f"  [DEBUG] logp_old    | mean: {logp_old.mean():.4f} | std: {logp_old.std():.4f} | min: {logp_old.min():.4f} | max: {logp_old.max():.4f}", file=sys.stderr)
+            print(f"  [DEBUG] batch: {len(batch)} episodes | {states.shape[0]} total steps", file=sys.stderr)
+        # END DEBUG
         if value_loss == 'normalized_rmse':
             # Update value normalization statistics (EMA)
             batch_mean = values_targ.mean().item()
@@ -263,9 +236,8 @@ class FlappyAgent():
             self.value_std = ema_alpha * self.value_std + (1 - ema_alpha) * batch_std
             values_targ = (values_targ - self.value_mean) / self.value_std
 
-        # Do PPO epochs
         for ppo_ep in range(ppo_epochs):
-            # Reset accumulators each PPO epoch
+            # Reset accumulators each PPO epoch — only the last epoch's values are returned
             sum_policy_loss = 0.0
             sum_value_loss = 0.0
             sum_entropy = 0.0
@@ -307,12 +279,15 @@ class FlappyAgent():
                 sum_total_loss += loss.item()
                 num_updates += 1
 
-        # Return last epoch's stats
+            if hasattr(self, '_debug') and self._debug:
+                print(f"  [DEBUG] ppo_ep={ppo_ep} | avg L_clip: {sum_policy_loss / num_updates:.4f} | avg L_vf: {sum_value_loss / num_updates:.4f} | avg L_ent: {sum_entropy / num_updates:.4f}", file=sys.stderr)
+
         return (sum_policy_loss / num_updates, sum_value_loss / num_updates,
                 sum_entropy / num_updates, sum_total_loss / num_updates)
 
 
     # Helper functions
+
     def compute_advantage(self, rewards, values, gamma, lam):  # Eq 11 in PPO paper (GAE)
         t_max = rewards.shape[0]
         advantages = torch.zeros(t_max, dtype=torch.float32)
