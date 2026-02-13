@@ -11,7 +11,7 @@ from multiprocessing import Pool
 from openpyxl import Workbook
 
 os.environ['SDL_VIDEODRIVER'] = 'dummy'
-sys.path.insert(0, 'itml-project2')
+sys.path.insert(0, '../itml-project2')
 # noinspection PyUnresolvedReferences
 from ple.games.flappybird import FlappyBird
 # noinspection PyUnresolvedReferences
@@ -257,7 +257,7 @@ def run_config():
 
 
     num_configs = len(lr_list)
-    output_dir = "Multi parallel data/Run 6 c1"
+    output_dir = "../Multi parallel data/Run 6 c1"
     os.makedirs(output_dir, exist_ok=True)
 
     total_start = time.time()
