@@ -6,7 +6,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 
-import pandas as pd
 
 from ple.games.flappybird import FlappyBird
 from ple import PLE
@@ -14,8 +13,8 @@ from ple import PLE
 
 # Helper functions
 def normalize_game_state(state):
-    means = torch.tensor([150.0, 0.0, 76.0, 108.0, 208.0, 226.0, 108.0, 208.0])
-    stds = torch.tensor([44.0, 5.0, 44.0, 48.0, 48.0, 44.0, 48.0, 48.0])
+    means = torch.tensor([  150.0,  0.0,    76.0,   108.0,  208.0,  226.0,  108.0,  208.0])
+    stds = torch.tensor([   44.0,   5.0,    44.0,   48.0,   48.0,   44.0,   48.0,   48.0])
     return (state - means) / stds
 
 def state_to_tensor(state):
@@ -153,6 +152,8 @@ class FlappyAgent():
         epoch_loss_ent = []
         epoch_loss_tot = []
         epoch_test_pipes = []
+        test_freq = 1
+        test_threshold = 10
         for epoch in range(num_epochs):
 
             # Anneal learning rate
@@ -176,7 +177,17 @@ class FlappyAgent():
                                                     entropy_coef, max_grad_norm, ppo_epochs, minibatch_size,
                                                     ema_alpha, value_loss, normalize_advantage)
 
+            # Test the greedy policy
             test_pipes = -1
+            if test_exploit and (epoch % test_freq == 0):
+                test_pipes = self.play_episode(episode, mode='Exploit', max_pipes=100000, print_freq=10000)
+                if test_pipes >= test_threshold:
+                    test_freq = min(test_freq*2,16)
+                    test_threshold = min(test_threshold*10,100000)
+                elif test_pipes < test_threshold/10:
+                    test_freq = max(test_freq/2, 1)
+                    test_threshold = max(test_threshold/10,10)
+
             # Collect stats
             epoch_pipes.append(avg_pipes)
             epoch_loss_clip.append(l_clip)
@@ -185,39 +196,30 @@ class FlappyAgent():
             epoch_loss_tot.append(loss)
             epoch_test_pipes.append(test_pipes)
 
+            # Save stats
+            if result_path is not None:
+                with open(result_path, 'w' if epoch == 0 else 'a') as f:
+                    if epoch == 0:
+                        f.write('epoch_pipes,epoch_loss_clip,epoch_loss_val,epoch_loss_ent,epoch_loss_tot,epoch_test_pipes\n')
+                    f.write(f'{epoch_pipes[-1]},{epoch_loss_clip[-1]},{epoch_loss_val[-1]},{epoch_loss_ent[-1]},{epoch_loss_tot[-1]},{epoch_test_pipes[-1]}\n')
+
             # Print stats
-            if (epoch + 1) % print_freq == 0:
-                # Test the exploiting agent
-                if test_exploit:
-                    test_pipes = 0
-                    for _ in range(3):
-                        test_pipes += self.play_episode(episode, mode='Exploit', max_pipes=10000)
-                epoch_test_pipes[-1] = test_pipes / 3
+            # if (epoch + 1) % print_freq == 0:
 
-                recent_pipes = epoch_pipes[-print_freq:]
-                recent_loss_clip = epoch_loss_clip[-print_freq:]
-                recent_loss_val = epoch_loss_val[-print_freq:]
-                recent_loss_ent = epoch_loss_ent[-print_freq:]
-                recent_loss_tot = epoch_loss_tot[-print_freq:]
+            #     recent_pipes = epoch_pipes[-print_freq:]
+            #     recent_loss_clip = epoch_loss_clip[-print_freq:]
+            #     recent_loss_val = epoch_loss_val[-print_freq:]
+            #     recent_loss_ent = epoch_loss_ent[-print_freq:]
+            #     recent_loss_tot = epoch_loss_tot[-print_freq:]
+            #     recent_epoch_test_pipes = [p if p > 0 else 0 for p in epoch_test_pipes[-print_freq:]]
 
-                if result_path is not None:
-                    first_write = (epoch + 1 == print_freq)
-                    pd.DataFrame({
-                        'epoch_pipes': epoch_pipes[-print_freq:],
-                        'epoch_loss_clip': epoch_loss_clip[-print_freq:],
-                        'epoch_loss_val': epoch_loss_val[-print_freq:],
-                        'epoch_loss_ent': epoch_loss_ent[-print_freq:],
-                        'epoch_loss_tot': epoch_loss_tot[-print_freq:],
-                        'epoch_test_pipes': epoch_test_pipes[-print_freq:],
-                    }).to_csv(result_path, index=False, mode='w' if first_write else 'a', header=first_write)
-
-                print(f"Epoch {epoch+1:5d} | "
-                      f"Avg Pipes: {sum(recent_pipes) / len(recent_pipes):7.2f} | "
-                      f"L_clip: {sum(recent_loss_clip) / len(recent_loss_clip):.4f} | "
-                      f"L_vf: {sum(recent_loss_val) / len(recent_loss_val):.4f} | "
-                      f"L_ent: {sum(recent_loss_ent) / len(recent_loss_ent):.4f} | "
-                      f"Loss: {sum(recent_loss_tot) / len(recent_loss_tot):.4f} | "
-                      f"Test Pipes: {test_pipes:7.2f}")
+            #     print(f"Epoch {epoch+1:5d} | "
+            #           f"Avg Pipes: {sum(recent_pipes) / len(recent_pipes):7.2f} | "
+            #           f"L_clip: {sum(recent_loss_clip) / len(recent_loss_clip):.4f} | "
+            #           f"L_vf: {sum(recent_loss_val) / len(recent_loss_val):.4f} | "
+            #           f"L_ent: {sum(recent_loss_ent) / len(recent_loss_ent):.4f} | "
+            #           f"Loss: {sum(recent_loss_tot) / len(recent_loss_tot):.4f} | "
+            #           f"Test Pipes: {sum(recent_epoch_test_pipes) / len(recent_epoch_test_pipes):7.2f}")
 
     def train(self, batch, gamma, lam, clip_eps, clip_coef, value_coef, entropy_coef, max_grad_norm, ppo_epochs, minibatch_size,
               ema_alpha=0.9, value_loss='mse', normalize_advantage=True):
