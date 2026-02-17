@@ -1,11 +1,13 @@
 from math import inf
-import sys
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 
+import sys
+import os
+os.environ['SDL_VIDEODRIVER'] = 'dummy'
+sys.path.insert(0, '../itml-project2')
 
 from ple.games.flappybird import FlappyBird
 from ple import PLE
@@ -82,38 +84,38 @@ class FlappyAgent():
         return int(action.item()), float(logp.item()), float(value.item())
 
     def play_episode(self, episode, mode='Explore', max_pipes=None, print_freq=None):
-        #observed_states = {'player_pos':[], 'player_vel':[], 'next_pipe_dist':[], 'next_pipe_top':[],
-        #                                        'next_pipe_bot':[], 'next_next_pipe_dist':[], 'next_next_pipe_top':[],
-        #                                        'next_next_pipe_bot':[]}
-        # Play an entire game
         episode.reset_game()
-        game_path = []
         nr_pipes = 0
-        while not episode.game_over():
-            # Get the current state
-            state = episode.getGameState()
-            #observed_states['player_pos'].append(state['player_y'])
-            #observed_states['player_vel'].append(state['player_vel'])
-            #observed_states['next_pipe_dist'].append(state['next_pipe_dist_to_player'])
-            #observed_states['next_pipe_top'].append(state['next_pipe_top_y'])
-            #observed_states['next_pipe_bot'].append(state['next_pipe_bottom_y'])
-            #observed_states['next_next_pipe_dist'].append(state['next_next_pipe_dist_to_player'])
-            #observed_states['next_next_pipe_top'].append(state['next_next_pipe_top_y'])
-            #observed_states['next_next_pipe_bot'].append(state['next_next_pipe_bottom_y'])
 
-            state = state_to_tensor(state)
-            # Decide on the action
+        # Fast path for greedy testing — no autograd, no distribution, no memory storage
+        if mode == 'Exploit':
+            action_set = episode.getActionSet()
+            with torch.no_grad():
+                while not episode.game_over():
+                    state = state_to_tensor(episode.getGameState())
+                    probs, _ = self.network.forward(state)
+                    action = torch.argmax(probs).item()
+                    reward = episode.act(action_set[action])
+                    if reward > 0:
+                        nr_pipes += 1
+                        if print_freq is not None and nr_pipes % print_freq == 0:
+                            print()
+                            print(nr_pipes)
+                        if max_pipes is not None and nr_pipes >= max_pipes:
+                            break
+            return nr_pipes
+
+        # Explore path — full experience collection for training
+        game_path = []
+        while not episode.game_over():
+            state = state_to_tensor(episode.getGameState())
             action, logp, value = self.get_action(state, mode)
-            # Do the action and get reward
             reward = episode.act(episode.getActionSet()[action])
-            # Store experience point
             game_path.append(torch.cat([
                 state,
                 torch.tensor([float(action), float(reward), float(logp), float(value)],
                              dtype=torch.float32)
                 ]))
-
-            # Count pipes
             if reward > 0:
                 nr_pipes += 1
                 if print_freq is not None and nr_pipes % print_freq == 0:
@@ -122,7 +124,6 @@ class FlappyAgent():
                 if max_pipes is not None and nr_pipes >= max_pipes:
                     break
 
-        # Store game experience
         self.memory = torch.stack(game_path)
         return nr_pipes
 
