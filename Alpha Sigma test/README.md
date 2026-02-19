@@ -1,12 +1,16 @@
 # Alpha Sigma Test — T-alpha Activation Function
 
-Experiments with **T-alpha**, a custom learnable activation function, applied to PPO reinforcement learning for Flappy Bird.
+Experiments with **T-alpha**, a learnable composite activation system applied to PPO reinforcement learning for Flappy Bird.
 
 ## What is T-alpha?
 
-T-alpha is a parameterized activation function where each neuron learns its own activation shape during training. Unlike fixed activations (ReLU, tanh), T-alpha has per-neuron learnable parameters that let the network adapt its nonlinearity to the task.
+T-alpha is not a single activation function you swap in for ReLU or tanh. The core idea is to build an activation from multiple **talpha-modulated basis functions** — `talpha(z)*cos(z)`, `talpha(z)*abs(z)`, `talpha(z)*z²`, etc. — and let the network learn a per-neuron weighted combination of them. Each neuron discovers its own activation shape by adjusting how much of each talpha*basis it uses.
 
-## Mathematical Definition
+The `AdaptiveLayer` gives every neuron a weight vector over these bases. During training the model learns not just *what* to compute, but *how to activate* — choosing its own nonlinearity from the space spanned by the talpha-modulated functions.
+
+## The T-alpha Gate
+
+The underlying talpha function is a parameterized sigmoid-like gate:
 
 ```
 h(x) = c * (tanh(u / 2) - 1) + b
@@ -21,25 +25,13 @@ where u = a * x / 2 - d * a
 | `c` | Output scale (`b*c` = distance between min and max) | Yes | 0.5 |
 | `d` | Horizontal offset (x-location of the step) | Yes | 0.0 |
 
-With default parameters, T-alpha produces a sharp step-like function. The learnable parameters (`c`, `d`, `b`) allow each neuron to position, scale, and shift this step independently.
-
-## How It's Used
-
-T-alpha is typically applied as a **gating mechanism** rather than a direct activation:
-
-```python
-z = talpha(z) * z  # element-wise gate: learned step function modulates the input
-```
-
-This lets the network learn per-neuron input gates — selectively passing or suppressing signal based on learned thresholds.
+This gate multiplies each basis function, giving the network learnable control over when and how strongly each basis contributes.
 
 ## Evolution of the AdaptiveLayer
 
-The project explores two versions of the `AdaptiveLayer`, which lets each neuron learn a weighted combination of 5 basis functions:
-
 ### Version 1 — Mixed bases (`adaptive_model.py`, `a=100,000`)
 
-One T-alpha basis alongside standard mathematical functions:
+Only one basis uses talpha; the rest are plain mathematical functions. Weights initialized with `w_linear = 1.0`, all others `0.0` (starting as identity):
 
 | Basis | Expression |
 |-------|-----------|
@@ -51,17 +43,17 @@ One T-alpha basis alongside standard mathematical functions:
 
 ### Version 2 — All-Talpha bases (`Flappy_Talpha.ipynb`, `a=20`)
 
-Every basis is modulated through T-alpha, giving the gating mechanism full control:
+Every basis is modulated through talpha, so the gating mechanism has full control over all components. Weights initialized with `w_talpha = 0.6`, all others `0.1` — the model starts with a slight bias toward the pure gate but actively uses all bases from the beginning:
 
 | Basis | Expression |
 |-------|-----------|
 | T-alpha | `talpha(z)` |
 | T-alpha quadratic | `talpha(z) * z^2` |
 | T-alpha cosine | `talpha(z) * cos(z)` |
-| T-alpha sine | `talpha(z) * sin(z)` |
+| T-alpha abs | `talpha(z) * abs(z)` |
 | T-alpha linear | `talpha(z) * z` |
 
-The softer `a=20` produces a smoother sigmoid-like gate (vs the near-binary step at `a=100,000`), which may improve gradient flow during RL training.
+The softer `a=20` produces a smooth sigmoid-like gate (vs the near-binary step at `a=100,000`), which improves gradient flow during RL training. The key shift from v1 to v2 is that the model no longer has any "raw" basis functions — everything passes through talpha, so the network must learn to use the talpha gate to shape every component of its activation.
 
 ## Implementations
 
@@ -87,16 +79,7 @@ Defines the original `AdaptiveLayer` with mixed bases (see Version 1 above). Eac
 
 ### `Flappy_Talpha.ipynb` — PPO training on Flappy Bird (v2)
 
-Full PPO (Proximal Policy Optimization) pipeline using the all-Talpha `AdaptiveLayer` (Version 2) in the policy/value network:
-
-```
-PPO_Flappy architecture:
-  Linear(8, 64) → AdaptiveLayer(64)
-  Linear(64, 64) → AdaptiveLayer(64)
-  Linear(64, 64) → AdaptiveLayer(64)
-  ├─ Actor head → Linear(64, 2) → softmax (flap / no-flap)
-  └─ Critic head → Linear(64, 1) (state value)
-```
+Full PPO (Proximal Policy Optimization) pipeline using the all-Talpha `AdaptiveLayer` (Version 2) in the policy/value network. Each hidden layer is followed by an `AdaptiveLayer` of matching size, with actor (softmax) and critic heads on top. Layer sizes and depth vary between runs.
 
 **Training details:**
 - 8 game-state features (player position, velocity, pipe positions), normalized
@@ -105,7 +88,7 @@ PPO_Flappy architecture:
 - Linear learning rate annealing from `3e-4` to 0
 - Minibatch SGD over collected rollouts (~8192 steps per epoch, minibatch size 512)
 - Gradient clipping at 0.5
-- Weights saved to `Weights/AT1.pt`
+- Weights saved to `Weights/AT_L2.pt`
 
 ### `Greedy_Talpha_flappy.py` — Greedy evaluation
 
@@ -129,7 +112,8 @@ Initial minimal NumPy network prototype (no activations, incomplete backprop). S
 
 | File | Model version | Description |
 |------|---------------|-------------|
-| `Weights/AT1.pt` | v2 (all-Talpha, `a=20`) | Trained with all T-alpha-modulated bases |
+| `Weights/AT_L2.pt` | v2 (all-Talpha, `a=20`) | Trained with all T-alpha-modulated bases (5-layer) |
+| `Weights/AT1.pt` | v2 (all-Talpha, `a=20`) | Trained with all T-alpha-modulated bases (3-layer) |
 | `Weights/Ad1.pt` | v1 (mixed bases, `a=20`) | First run with original mixed bases |
 | `Weights/Ad2.pt` | v1 (mixed bases, `a=20`) | Second run with original mixed bases |
 | `Weights/my_model.npz` | NumPy network | Custom network trained on `y = x^2` |

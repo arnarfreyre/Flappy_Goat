@@ -10,10 +10,12 @@ import torch
 
 # ── Constants ──────────────────────────────────────────────────────────
 A = 20  # fixed from AdaptiveLayer.__init__
-MODEL_PATH = "Weights/AT1.pt"
+MODEL_PATH = "Weights/AT_L4_maxwin.pt"
 X = np.linspace(-10, 10, 500)
-BASIS_LABELS = ['talpha(z)', 'talpha(z)*z²', 'talpha(z)*cos(z)', 'talpha(z)*sin(z)', 'talpha(z)*z']
+BASIS_LABELS = ['Ta(z)', 'Ta(z)*z²', 'Ta(z)*cos(z)', 'Ta(z)*abs(z)', 'Ta(z)*z']
 ALL_LAYER_NAMES = ["adaptive1", "adaptive2", "adaptive3", "adaptive4", "adaptive5"]
+# ModuleList variant: adaptive.0, adaptive.1, ...
+ALL_LAYER_NAMES_ALT = ["adaptive.0", "adaptive.1", "adaptive.2", "adaptive.3", "adaptive.4"]
 
 
 # ── Helper functions (pure numpy, vectorized over neurons) ─────────────
@@ -51,8 +53,10 @@ def combined_activation_np(z, weights, c, d, b, a=A):
 # ── Load model weights ────────────────────────────────────────────────
 sd = torch.load(MODEL_PATH, map_location="cpu", weights_only=True)
 
-# Auto-detect which adaptive layers exist in the checkpoint
+# Auto-detect which adaptive layers exist in the checkpoint (handles both naming conventions)
 LAYER_NAMES = [n for n in ALL_LAYER_NAMES if f"{n}.c" in sd]
+if not LAYER_NAMES:
+    LAYER_NAMES = [n for n in ALL_LAYER_NAMES_ALT if f"{n}.c" in sd]
 NUM_LAYERS = len(LAYER_NAMES)
 
 layers = []
