@@ -20,10 +20,10 @@ def mfunc2(a=100000,b=1,c=0.5,d=0,x=None):
     :param x: w'*x
     :return: talpha function
     """
-    input_x = a*x/2-d*a
+    z = a*x/2-d*a
 
-    func = np.tanh(input_x/2)-1
-    ret_func = c*(func)+b
+    func = np.tanh(z)-1
+    ret_func = (c*(func)+b)
     return ret_func
 
 
@@ -163,7 +163,6 @@ if __name__ == "__main__":
 
     network = Network()
     network.add_linear(1)
-    network.add_linear(4, activation=mfunc2)
     network.add_linear(4, activation=mfunc2)
     network.add_linear(1)
     network.print_layers()
