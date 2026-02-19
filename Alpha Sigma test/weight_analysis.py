@@ -10,7 +10,7 @@ import torch
 
 # ── Constants ──────────────────────────────────────────────────────────
 A = 20  # fixed from AdaptiveLayer.__init__
-MODEL_PATH = "Weights/AT_L4_maxwin.pt"
+MODEL_PATH = "Weights/AT_L5Max.pt"
 X = np.linspace(-10, 10, 500)
 BASIS_LABELS = ['Ta(z)', 'Ta(z)*z²', 'Ta(z)*cos(z)', 'Ta(z)*abs(z)', 'Ta(z)*z']
 ALL_LAYER_NAMES = ["adaptive1", "adaptive2", "adaptive3", "adaptive4", "adaptive5"]
@@ -42,7 +42,7 @@ def combined_activation_np(z, weights, c, d, b, a=A):
         ta,                                # talpha(z)
         ta * z_ ** 2,                      # talpha(z)*z²
         ta * np.cos(z_),                   # talpha(z)*cos(z)
-        ta * np.sin(z_),                   # talpha(z)*sin(z)
+        ta * np.abs(z_),                   # talpha(z)*abs(z)
         ta * z_,                           # talpha(z)*z
     ], axis=-1)                            # (M, N, 5)
 
@@ -137,5 +137,44 @@ for col, (layer, name) in enumerate(zip(layers, LAYER_NAMES)):
     ax.axhline(0, color="gray", linewidth=0.5, linestyle="--")
 
 fig2.tight_layout(rect=[0, 0, 1, 0.92])
+
+
+# ── Figure 3: All Basis Functions per Layer (5 bases × N layers) ─────
+BASIS_COLORS = ["#4C72B0", "#55A868", "#C44E52", "#8172B2", "#CCB974"]
+
+fig3, axes3 = plt.subplots(len(BASIS_LABELS), NUM_LAYERS,
+                            figsize=(4 * NUM_LAYERS, 3 * len(BASIS_LABELS)))
+fig3.suptitle("Learned Basis Functions per Layer", fontsize=16, fontweight="bold")
+
+for col, (layer, name) in enumerate(zip(layers, LAYER_NAMES)):
+    c, d, b = layer["c"], layer["d"], layer["b"]
+    M = c.shape[0]
+    ta = talpha_np(X, c, d, b)         # (M, N)
+    z_ = X[np.newaxis, :]              # (1, N)
+
+    basis_curves = [
+        ta,                             # Ta(z)
+        ta * z_ ** 2,                   # Ta(z)*z²
+        ta * np.cos(z_),               # Ta(z)*cos(z)
+        ta * np.abs(z_),               # Ta(z)*abs(z)
+        ta * z_,                        # Ta(z)*z
+    ]
+
+    for row, (curves, label) in enumerate(zip(basis_curves, BASIS_LABELS)):
+        ax = axes3[row, col]
+        for i in range(M):
+            ax.plot(X, curves[i], color=BASIS_COLORS[row], alpha=0.15, linewidth=0.7)
+        ax.plot(X, curves.mean(axis=0), color="darkred", linewidth=2, label="mean")
+        ax.set_xlim(-10, 10)
+        ax.axhline(0, color="gray", linewidth=0.5, linestyle="--")
+        if row == 0:
+            ax.set_title(f"{name} ({M})")
+        if col == 0:
+            ax.set_ylabel(label)
+        if row == len(BASIS_LABELS) - 1:
+            ax.set_xlabel("z")
+        ax.legend(loc="upper left", fontsize=7)
+
+fig3.tight_layout(rect=[0, 0, 1, 0.95])
 
 plt.show()

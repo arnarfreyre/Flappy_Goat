@@ -18,15 +18,20 @@ from Talpha import AdaptiveLayer
 
 
 class PPO_Flappy(nn.Module):
-    def __init__(self, hidden_layers, **adaptive_kwargs):
+    def __init__(self, hidden_layers, layer_configs=None, **adaptive_kwargs):
         super().__init__()
         sizes = [8] + hidden_layers
         self.hidden = nn.ModuleList([
             nn.Linear(sizes[i], sizes[i + 1]) for i in range(len(sizes) - 1)
         ])
-        self.adaptive = nn.ModuleList([
-            AdaptiveLayer(size, **adaptive_kwargs) for size in hidden_layers
-        ])
+        if layer_configs is not None:
+            self.adaptive = nn.ModuleList([
+                AdaptiveLayer(size, **cfg) for size, cfg in zip(hidden_layers, layer_configs)
+            ])
+        else:
+            self.adaptive = nn.ModuleList([
+                AdaptiveLayer(size, **adaptive_kwargs) for size in hidden_layers
+            ])
         self.actor = nn.Linear(hidden_layers[-1], 2)
         self.critic = nn.Linear(hidden_layers[-1], 1)
 
