@@ -7,10 +7,11 @@ and T-alpha gating for all 5 adaptive layers.
 import numpy as np
 import matplotlib.pyplot as plt
 import torch
+import pandas as pd
 
 # ── Constants ──────────────────────────────────────────────────────────
-A = 20  # fixed from AdaptiveLayer.__init__
-MODEL_PATH = "Weights/AT_L5Max.pt"
+A = 200  # must match the 'a' used during training (AdaptiveLayer default)
+MODEL_PATH = "Weights/AT_Test64x64x64.pt"
 X = np.linspace(-10, 10, 500)
 BASIS_LABELS = ['Ta(z)', 'Ta(z)*z²', 'Ta(z)*cos(z)', 'Ta(z)*abs(z)', 'Ta(z)*z']
 ALL_LAYER_NAMES = ["adaptive1", "adaptive2", "adaptive3", "adaptive4", "adaptive5"]
@@ -69,6 +70,32 @@ for name in LAYER_NAMES:
     })
 
 
+# ── DataFrame summary of c, d, b and basis weights per layer ────────
+for name, layer in zip(LAYER_NAMES, layers):
+    c, d, b = layer["c"], layer["d"], layer["b"]
+    w = layer["weights"]  # (M, 5)
+    M = c.shape[0]
+
+    df = pd.DataFrame({
+        "neuron": range(M),
+        "c": c,
+        "d": d,
+        "b": b,
+        "w_Ta":        w[:, 0],
+        "w_Ta_z2":     w[:, 1],
+        "w_Ta_cos":    w[:, 2],
+        "w_Ta_abs":    w[:, 3],
+        "w_Ta_z":      w[:, 4],
+    }).set_index("neuron")
+
+    print(f"\n{'='*70}")
+    print(f" Layer: {name}  ({M} neurons)")
+    print(f"{'='*70}")
+    print(df.to_string())
+    print(f"\n--- Statistics ---")
+    print(df.describe().to_string())
+
+
 # ── Figure 1: Adaptive Layer Overview (5×3) ──────────────────────────
 fig1, axes1 = plt.subplots(NUM_LAYERS, 3, figsize=(18, 4 * NUM_LAYERS))
 fig1.suptitle("Adaptive Layer Overview", fontsize=16, fontweight="bold")
@@ -114,30 +141,6 @@ for row, (layer, name) in enumerate(zip(layers, LAYER_NAMES)):
     ax.set_title("Basis Importance" if row == 0 else "")
 
 fig1.tight_layout(rect=[0, 0, 1, 0.95])
-
-
-# ── Figure 2: Learned T-alpha Gating (1×5) ───────────────────────────
-fig2, axes2 = plt.subplots(1, NUM_LAYERS, figsize=(4 * NUM_LAYERS, 4))
-fig2.suptitle("Learned T-alpha Gating: t\u03b1(z)\u00b7z", fontsize=14, fontweight="bold")
-
-for col, (layer, name) in enumerate(zip(layers, LAYER_NAMES)):
-    ax = axes2[col]
-    c, d, b = layer["c"], layer["d"], layer["b"]
-    M = c.shape[0]
-    ta_z = talpha_np(X, c, d, b) * X[np.newaxis, :]  # (M, N)
-
-    for i in range(M):
-        ax.plot(X, ta_z[i], color="teal", alpha=0.15, linewidth=0.7)
-    ax.plot(X, ta_z.mean(axis=0), color="darkred", linewidth=2, label="mean")
-    ax.set_xlim(-10, 10)
-    ax.set_xlabel("z")
-    ax.set_ylabel("t\u03b1(z)\u00b7z")
-    ax.set_title(f"{name} ({M})")
-    ax.legend(loc="upper left", fontsize=8)
-    ax.axhline(0, color="gray", linewidth=0.5, linestyle="--")
-
-fig2.tight_layout(rect=[0, 0, 1, 0.92])
-
 
 # ── Figure 3: All Basis Functions per Layer (5 bases × N layers) ─────
 BASIS_COLORS = ["#4C72B0", "#55A868", "#C44E52", "#8172B2", "#CCB974"]
