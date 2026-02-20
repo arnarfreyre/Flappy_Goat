@@ -30,10 +30,10 @@ class AdaptiveLayer(nn.Module):
 
     Each neuron computes: sum_i( w_i * basis_i(z) )
 
-    Bases: talpha(z),talpha(z)* z²,talpha(z)* cos(z),talpha(z)* sin(z),talpha(z)* z
+    Bases: talpha(z), talpha(z)*z², talpha(z)*cos(z), talpha(z)*abs(z), talpha(z)*z, talpha(z)*sin(z)
     """
-    BASIS_NAMES = ['Ta(z)', 'Ta(z)*z²', 'Ta(z)*cos(z)', 'Ta(z)*abs(z)', 'Ta(z)*z']
-    NUM_BASES = 5
+    BASIS_NAMES = ['Ta(z)', 'Ta(z)*z²', 'Ta(z)*cos(z)', 'Ta(z)*abs(z)', 'Ta(z)*z', 'Ta(z)*sin(z)']
+    NUM_BASES = 6
 
     def __init__(self, features, a=20):
         super().__init__()
@@ -46,9 +46,8 @@ class AdaptiveLayer(nn.Module):
         self.b = nn.Parameter(torch.ones(features))
 
         # Mixing weights per neuron — init biased toward linear (identity)
-        w_init = torch.zeros(features, self.NUM_BASES)
+        w_init = torch.full((features, self.NUM_BASES), 0.4 / (self.NUM_BASES - 1))
         w_init[:, 0] = 0.6
-        w_init[:, 1:] = 0.1
         self.weights = nn.Parameter(w_init)
 
     def _talpha(self, z):
@@ -62,7 +61,8 @@ class AdaptiveLayer(nn.Module):
             self._talpha(z) * torch.cos(z),            # Talpha cosine
             self._talpha(z) * torch.abs(z),            # Talpha abs
             self._talpha(z) * z,                       # Talpha Linear
-        ], dim=-1)                    # (batch, features, 5)
+            self._talpha(z) * torch.sin(z),            # Talpha sine
+        ], dim=-1)                    # (batch, features, 6)
 
         return (bases * self.weights).sum(dim=-1)  # (batch, features)
 

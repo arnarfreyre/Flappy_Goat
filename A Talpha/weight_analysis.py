@@ -11,7 +11,7 @@ import pandas as pd
 
 # ── Constants ──────────────────────────────────────────────────────────
 A = 200  # must match the 'a' used during training (AdaptiveLayer default)
-MODEL_PATH = "Weights/AT_Test64x64x64.pt"
+MODEL_PATH = "Weights/AT_Test64_2.pt"
 X = np.linspace(-10, 10, 500)
 BASIS_LABELS = ['Ta(z)', 'Ta(z)*z²', 'Ta(z)*cos(z)', 'Ta(z)*abs(z)', 'Ta(z)*z']
 ALL_LAYER_NAMES = ["adaptive1", "adaptive2", "adaptive3", "adaptive4", "adaptive5"]
