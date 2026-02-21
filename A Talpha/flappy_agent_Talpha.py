@@ -7,9 +7,14 @@ import numpy as np
 import sys
 import os
 os.environ['SDL_VIDEODRIVER'] = 'dummy'
-sys.path.insert(0, '../itml-project2')
+_THIS_DIR = os.path.dirname(os.path.abspath(__file__))
+_PROJECT_ROOT = os.path.dirname(_THIS_DIR)
+sys.path.insert(0, os.path.join(_PROJECT_ROOT, 'itml-project2'))
+sys.path.insert(0, _PROJECT_ROOT)
 
+from silence_libpng import patch_flappy
 from ple.games.flappybird import FlappyBird
+patch_flappy(FlappyBird)
 from ple import PLE
 from Talpha import AdaptiveLayer
 
