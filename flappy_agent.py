@@ -51,6 +51,22 @@ class FlappyNetwork(nn.Module):
 
         return probs, value
 
+class GreedyHead(nn.Module):
+    """Minimal forward-only module for greedy evaluation.
+    Skips softmax (monotonic, argmax-invariant) and value head (unused).
+    Shares weight references with the training network.
+    """
+    def __init__(self, network):
+        super().__init__()
+        self.hidden = network.hidden  # shared reference
+        self.actor = network.actor    # shared reference
+
+    def forward(self, x):
+        y = x
+        for layer in self.hidden:
+            y = torch.tanh(layer(y))
+        return self.actor(y)  # raw logits, skip softmax + value
+
 class FlappyAgent():
     def __init__(self, hidden_layers, weights_path=None):
         # Neural network
@@ -127,6 +143,44 @@ class FlappyAgent():
         self.memory = torch.stack(game_path)
         return nr_pipes
 
+    def prepare_greedy(self):
+        """One-time setup for fast greedy evaluation."""
+        self._greedy_head = GreedyHead(self.network)
+        self._greedy_means = torch.tensor([150.0, 0.0, 76.0, 108.0, 208.0, 226.0, 108.0, 208.0])
+        self._greedy_stds = torch.tensor([44.0, 5.0, 44.0, 48.0, 48.0, 44.0, 48.0, 48.0])
+
+    def play_greedy(self, episode, max_pipes=None, print_freq=None):
+        """Optimized greedy evaluation using inference_mode and GreedyHead."""
+        episode.reset_game()
+        nr_pipes = 0
+
+        # Local refs for speed
+        head = self._greedy_head
+        means = self._greedy_means
+        stds = self._greedy_stds
+        action_set = episode.getActionSet()
+        get_state = episode.getGameState
+        game_over = episode.game_over
+        act = episode.act
+
+        head.eval()
+        with torch.inference_mode():
+            while not game_over():
+                raw = get_state()
+                state = (torch.tensor(list(raw.values()), dtype=torch.float32) - means) / stds
+                logits = head(state)
+                action = 0 if logits[0] >= logits[1] else 1
+                reward = act(action_set[action])
+                if reward > 0:
+                    nr_pipes += 1
+                    if print_freq is not None and nr_pipes % print_freq == 0:
+                        print()
+                        print(nr_pipes)
+                    if max_pipes is not None and nr_pipes >= max_pipes:
+                        break
+        self.network.train()
+        return nr_pipes
+
     # Training functions
     def run_training(self, gamma, lam, clip_eps, clip_coef, value_coef, entropy_coef, max_grad_norm,
                      learning_rate, ppo_epochs, num_epochs, target_steps=800, minibatch_size=128, print_freq=100,
@@ -145,6 +199,7 @@ class FlappyAgent():
             ple_kwargs['reward_values'] = reward_values
         episode = PLE(game, **ple_kwargs)
         episode.init()
+        self.prepare_greedy()
 
         # Initialize collectors
         epoch_pipes = []
@@ -181,7 +236,7 @@ class FlappyAgent():
             # Test the greedy policy
             test_pipes = -1
             if test_exploit and (epoch % test_freq == 0):
-                test_pipes = self.play_episode(episode, mode='Exploit', max_pipes=100000, print_freq=10000)
+                test_pipes = self.play_greedy(episode, max_pipes=100000, print_freq=10000)
                 if test_pipes >= test_threshold:
                     test_freq = min(test_freq*2,16)
                     test_threshold = min(test_threshold*10,100000)
