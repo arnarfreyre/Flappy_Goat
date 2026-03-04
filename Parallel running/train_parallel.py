@@ -47,6 +47,7 @@ EMA_ALPHA = 0.9
 VALUE_LOSS = 'mse'
 NORMALIZE_ADVANTAGE = True
 REWARD_VALUES = {'positive': 1.0, 'tick': 0.0, 'loss': -5.0}
+LR_ANNEAL_HORIZON = 5000  # matches notebook num_epochs for identical LR schedule
 
 MAX_PIPES = 100000
 CONVERGENCE_STREAK = 3
@@ -105,8 +106,16 @@ def train_one_run(args):
     recent_greedy = deque(maxlen=10)
     last_print_time = time.time()
     converged = False
+    test_freq = 1
+    test_threshold = 10
 
     while not converged:
+        # Anneal learning rate (matching run_training() schedule)
+        lr = LEARNING_RATE * (1.0 - epoch / LR_ANNEAL_HORIZON)
+        lr = max(lr, 0.0)
+        for param_group in agent.optimizer.param_groups:
+            param_group['lr'] = lr
+
         # Collect training data
         batch = []
         episode_pipes = []
@@ -129,15 +138,18 @@ def train_one_run(args):
         max_explore = max(max_explore, avg_pipes)
         recent_explore.append(avg_pipes)
 
-        epoch += 1
-
-        # Greedy eval every 3 epochs
-        if epoch % 3 == 0:
+        # Test the greedy policy (adaptive frequency, matching run_training())
+        test_pipes = -1
+        if epoch % test_freq == 0:
             test_pipes = agent.play_greedy(episode, max_pipes=MAX_PIPES)
             max_greedy = max(max_greedy, test_pipes)
             recent_greedy.append(test_pipes)
-        else:
-            test_pipes = 0
+            if test_pipes >= test_threshold:
+                test_freq = min(test_freq * 2, 16)
+                test_threshold = min(test_threshold * 10, 100000)
+            elif test_pipes < test_threshold / 10:
+                test_freq = max(test_freq / 2, 1)
+                test_threshold = max(test_threshold / 10, 10)
 
         # Append to CSV (incremental — survives kills)
         with open(csv_path, 'a') as f:
@@ -154,8 +166,10 @@ def train_one_run(args):
                   flush=True)
             last_print_time = now
 
+        epoch += 1
+
         # Greedy-only convergence check
-        if epoch % 3 == 0 and test_pipes >= MAX_PIPES:
+        if test_pipes >= MAX_PIPES:
             streak = 1
             print(f"{tag} Hit {MAX_PIPES} pipes — running {CONVERGENCE_STREAK - 1} "
                   f"greedy-only confirmation evals...", flush=True)
