@@ -1,2 +1,0 @@
-epoch_pipes,epoch_loss_clip,epoch_loss_val,epoch_loss_ent,epoch_loss_tot,epoch_test_pipes
-0.025,0.004565124399960041,0.5196345876902342,0.6884806230664253,0.24836736358702183,0
