@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="e2e6fd2d-67df-4c77-9c06-ac24cacb4151" name="Changes" comment="Klara og runna" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="FlaskConsoleOptions" custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform)); sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo, NoAppException&#10;for module in [&quot;main.py&quot;, &quot;wsgi.py&quot;, &quot;app.py&quot;]:&#10;    try: locals().update(ScriptInfo(app_import_path=module, create_app=None).load_app().make_shell_context()); print(&quot;\nFlask App: %s&quot; % app.import_name); break&#10;    except NoAppException: pass">
+    <envs>
+      <env key="FLASK_APP" value="app" />
+    </envs>
+    <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform)); sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo, NoAppException&#10;for module in [&quot;main.py&quot;, &quot;wsgi.py&quot;, &quot;app.py&quot;]:&#10;    try: locals().update(ScriptInfo(app_import_path=module, create_app=None).load_app().make_shell_context()); print(&quot;\nFlask App: %s&quot; % app.import_name); break&#10;    except NoAppException: pass" />
+    <option name="myEnvs">
+      <map>
+        <entry key="FLASK_APP" value="app" />
+      </map>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;arnarfreyre&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/arnarfreyre/Flappy_Goat.git&quot;,
+    &quot;accountId&quot;: &quot;37c2a8ff-ad0b-447c-a826-1f2a1d78d8b3&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="39LVqHiajWIN3Ccu7Hx29UiNDl3" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.Greedy_Talpha_flappy.executor": "Run",
+    "Python.Talpha.executor": "Run",
+    "Python.adaptive_model.executor": "Run",
+    "Python.analysis.executor": "Run",
+    "Python.c3_analysis.executor": "Run",
+    "Python.cleanup_incomplete.executor": "Run",
+    "Python.custom_network.executor": "Run",
+    "Python.d2.executor": "Run",
+    "Python.model.executor": "Run",
+    "Python.models_config.executor": "Run",
+    "Python.normal_model.executor": "Run",
+    "Python.parallel_model.executor": "Run",
+    "Python.play_flappy.executor": "Run",
+    "Python.plot_epochs_to_100k.executor": "Run",
+    "Python.raw.executor": "Run",
+    "Python.talpha.executor": "Run",
+    "Python.temp.executor": "Run",
+    "Python.test.executor": "Run",
+    "Python.test_network.executor": "Run",
+    "Python.train_parallel.executor": "Run",
+    "Python.vis.executor": "Run",
+    "Python.weight_analysis Save.executor": "Run",
+    "Python.weight_analysis.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "last_opened_file_path": "/Users/arnarfreyrerlingsson/Documents/PPO Games/Flappy Project/Parallel running/Data",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Parallel running/Data" />
+      <recent name="$PROJECT_DIR$/Parallel running/Data/NN4096x3" />
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/Parallel running" />
+      <recent name="$PROJECT_DIR$/Temp" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Parallel running/Data/NN2048x3" />
+      <recent name="$PROJECT_DIR$/A Talpha" />
+      <recent name="$PROJECT_DIR$/Alpha Sigma test/Weights/Old" />
+      <recent name="$PROJECT_DIR$/Alpha Sigma test/Extra Scripts" />
+      <recent name="$PROJECT_DIR$/Random/d2" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-09060db00ec0-JavaScript-PY-251.26927.90" />
+        <option value="bundled-python-sdk-41e8cd69c857-64d779b69b7a-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-251.26927.90" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e2e6fd2d-67df-4c77-9c06-ac24cacb4151" name="Changes" comment="" />
+      <created>1770475526547</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1770475526547</updated>
+      <workItem from="1770475527605" duration="69900000" />
+      <workItem from="1770641132870" duration="22639000" />
+      <workItem from="1770734632393" duration="717000" />
+      <workItem from="1770742550278" duration="510000" />
+      <workItem from="1770752851221" duration="343000" />
+      <workItem from="1770757554453" duration="117000" />
+      <workItem from="1770759321063" duration="1711000" />
+      <workItem from="1770803753091" duration="19754000" />
+      <workItem from="1770844279510" duration="1987000" />
+      <workItem from="1770908081482" duration="129000" />
+      <workItem from="1770911344519" duration="65000" />
+      <workItem from="1770911479713" duration="51000" />
+      <workItem from="1770913361665" duration="724000" />
+      <workItem from="1770923259087" duration="1024000" />
+      <workItem from="1770985497949" duration="24681000" />
+      <workItem from="1771318449014" duration="9240000" />
+      <workItem from="1771410544875" duration="8316000" />
+      <workItem from="1771454413769" duration="11119000" />
+      <workItem from="1771498905908" duration="18178000" />
+      <workItem from="1771592803406" duration="31000" />
+      <workItem from="1771592839467" duration="11637000" />
+      <workItem from="1771687754543" duration="6264000" />
+      <workItem from="1771772735159" duration="18455000" />
+      <workItem from="1771801086965" duration="2731000" />
+      <workItem from="1771839774901" duration="325000" />
+      <workItem from="1771841660296" duration="232000" />
+      <workItem from="1771842214438" duration="9000" />
+      <workItem from="1772119757486" duration="13000" />
+      <workItem from="1772123737333" duration="620000" />
+      <workItem from="1772404673921" duration="2405000" />
+      <workItem from="1772639720572" duration="6996000" />
+      <workItem from="1772719209614" duration="6518000" />
+      <workItem from="1772819209667" duration="17453000" />
+    </task>
+    <task id="LOCAL-00001" summary="Multi Parallel running">
+      <option name="closed" value="true" />
+      <created>1770576548499</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1770576548499</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Multi Parallel running">
+      <option name="closed" value="true" />
+      <created>1770580583461</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1770580583461</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Multi Parallel running">
+      <option name="closed" value="true" />
+      <created>1770806470751</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1770806470751</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Multi Parallel running">
+      <option name="closed" value="true" />
+      <created>1770845070519</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1770845070519</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Multi Parallel running">
+      <option name="closed" value="true" />
+      <created>1770985564614</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1770985564614</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Cleaning">
+      <option name="closed" value="true" />
+      <created>1770986060771</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1770986060771</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Cleaning">
+      <option name="closed" value="true" />
+      <created>1770986096167</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1770986096167</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Cleaning">
+      <option name="closed" value="true" />
+      <created>1770989520966</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1770989520966</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Cleaning">
+      <option name="closed" value="true" />
+      <created>1771001417648</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1771001417648</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Cleaning">
+      <option name="closed" value="true" />
+      <created>1771318493432</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1771318493432</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Testing custom talpha">
+      <option name="closed" value="true" />
+      <created>1771455322966</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1771455322966</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Mog Talpha að Mogga">
+      <option name="closed" value="true" />
+      <created>1771459760731</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1771459760731</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Mog Talpha að Mogga">
+      <option name="closed" value="true" />
+      <created>1771464690455</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1771464690455</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Mog Talpha að Mogga">
+      <option name="closed" value="true" />
+      <created>1771508176729</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1771508176729</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Mog Talpha að Mogga">
+      <option name="closed" value="true" />
+      <created>1771514552973</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1771514552973</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Hreinsa">
+      <option name="closed" value="true" />
+      <created>1771592858044</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1771592858044</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Hreinsa">
+      <option name="closed" value="true" />
+      <created>1771599380313</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1771599380313</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Auka">
+      <option name="closed" value="true" />
+      <created>1771692904782</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1771692904782</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Auka">
+      <option name="closed" value="true" />
+      <created>1772404691665</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1772404691665</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Klara og runna">
+      <option name="closed" value="true" />
+      <created>1772641844329</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1772641844329</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Klara og runna">
+      <option name="closed" value="true" />
+      <created>1772642177381</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1772642177381</updated>
+    </task>
+    <task id="LOCAL-00022" summary="Klara og runna">
+      <option name="closed" value="true" />
+      <created>1772719218958</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1772719218958</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Klara og runna">
+      <option name="closed" value="true" />
+      <created>1772820342617</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1772820342617</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Klara og runna">
+      <option name="closed" value="true" />
+      <created>1772828794785</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1772828794785</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Klara og runna">
+      <option name="closed" value="true" />
+      <created>1772829577581</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1772829577581</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Klara og runna">
+      <option name="closed" value="true" />
+      <created>1772833306354</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1772833306354</updated>
+    </task>
+    <task id="LOCAL-00027" summary="Klara og runna">
+      <option name="closed" value="true" />
+      <created>1772833346894</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1772833346894</updated>
+    </task>
+    <task id="LOCAL-00028" summary="Klara og runna">
+      <option name="closed" value="true" />
+      <created>1772837616227</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1772837616227</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Multi Parallel running" />
+    <MESSAGE value="Cleaning" />
+    <MESSAGE value="Testing custom talpha" />
+    <MESSAGE value="Mog Talpha að Mogga" />
+    <MESSAGE value="Hreinsa" />
+    <MESSAGE value="Auka" />
+    <MESSAGE value="Klara og runna" />
+    <option name="LAST_COMMIT_MESSAGE" value="Klara og runna" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/A Talpha/Extra Scripts/test_network.py</url>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/Flappy_Project$test_network.coverage" NAME="test_network Coverage Results" MODIFIED="1771454917789" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Alpha Sigma test" />
+    <SUITE FILE_PATH="coverage/Flappy_Project$models_config.coverage" NAME="models_config Coverage Results" MODIFIED="1772642083676" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Parallel running" />
+    <SUITE FILE_PATH="coverage/Flappy_Project$test.coverage" NAME="test Coverage Results" MODIFIED="1770510603236" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Flappy_Project$temp.coverage" NAME="temp Coverage Results" MODIFIED="1771596082919" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/A Talpha" />
+    <SUITE FILE_PATH="coverage/Flappy_Project$weight_analysis.coverage" NAME="weight_analysis Coverage Results" MODIFIED="1772406403467" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/A Talpha" />
+    <SUITE FILE_PATH="coverage/Flappy_Project$c3_analysis.coverage" NAME="c3_analysis Coverage Results" MODIFIED="1771518053051" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Alpha Sigma test" />
+    <SUITE FILE_PATH="coverage/Flappy_Project$adaptive_model.coverage" NAME="adaptive_model Coverage Results" MODIFIED="1771458418783" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Alpha Sigma test" />
+    <SUITE FILE_PATH="coverage/Flappy_Project$custom_network.coverage" NAME="custom_network Coverage Results" MODIFIED="1771455633436" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Alpha Sigma test" />
+    <SUITE FILE_PATH="coverage/Flappy_Project$weight_analysis_Save.coverage" NAME="weight_analysis Save Coverage Results" MODIFIED="1771596023643" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/A Talpha" />
+    <SUITE FILE_PATH="coverage/Flappy_Project$analysis.coverage" NAME="analysis Coverage Results" MODIFIED="1770844337030" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Multi parallel data" />
+    <SUITE FILE_PATH="coverage/Flappy_Project$Greedy_Talpha_flappy.coverage" NAME="Greedy_Talpha_flappy Coverage Results" MODIFIED="1771463500874" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Alpha Sigma test" />
+    <SUITE FILE_PATH="coverage/Flappy_Project$play_flappy.coverage" NAME="play_flappy Coverage Results" MODIFIED="1770488178428" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Flappy_Project$vis.coverage" NAME="vis Coverage Results" MODIFIED="1771841678195" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Solved Model" />
+    <SUITE FILE_PATH="coverage/Flappy_Project$parallel_model.coverage" NAME="parallel_model Coverage Results" MODIFIED="1770845972799" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Flappy_Project$talpha.coverage" NAME="talpha Coverage Results" MODIFIED="1771323553773" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Alpha Sigma test" />
+    <SUITE FILE_PATH="coverage/Flappy_Project$raw.coverage" NAME="raw Coverage Results" MODIFIED="1770752939455" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Flappy_Project$normal_model.coverage" NAME="normal_model Coverage Results" MODIFIED="1771456925388" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Alpha Sigma test" />
+    <SUITE FILE_PATH="coverage/Flappy_Project$train_parallel.coverage" NAME="train_parallel Coverage Results" MODIFIED="1772833751106" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Parallel running" />
+    <SUITE FILE_PATH="coverage/Flappy_Project$plot_epochs_to_100k.coverage" NAME="plot_epochs_to_100k Coverage Results" MODIFIED="1772840094629" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Parallel running" />
+    <SUITE FILE_PATH="coverage/Flappy_Project$Talpha.coverage" NAME="Talpha Coverage Results" MODIFIED="1772406387731" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/A Talpha" />
+    <SUITE FILE_PATH="coverage/Flappy_Project$d2.coverage" NAME="d2 Coverage Results" MODIFIED="1771005683086" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Random/d2" />
+    <SUITE FILE_PATH="coverage/Flappy_Project$cleanup_incomplete.coverage" NAME="cleanup_incomplete Coverage Results" MODIFIED="1772839912767" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Parallel running" />
+    <SUITE FILE_PATH="coverage/Flappy_Project$model.coverage" NAME="model Coverage Results" MODIFIED="1770669176718" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Housing Test" />
+  </component>
+</project>
