@@ -51,8 +51,8 @@ LR_ANNEAL_HORIZON = 5000  # matches notebook num_epochs for identical LR schedul
 
 MAX_PIPES = 100000
 CONVERGENCE_STREAK = 3
-RUNS_PER_MODEL = 3
-TOTAL_WORKERS = 5
+RUNS_PER_MODEL = 1
+TOTAL_WORKERS = 3
 
 # Shared lock for writing to overview.csv from multiple workers
 _overview_lock = Lock()
