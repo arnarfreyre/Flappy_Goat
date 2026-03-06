@@ -29,6 +29,8 @@ fig, ax = plt.subplots(figsize=(7, 4))
 for csv_path in csv_files:
     label = os.path.splitext(os.path.basename(csv_path))[0]
     df = pd.read_csv(csv_path)
+    if "epoch_test_pipes" not in df.columns:
+        continue
     epochs = range(1, len(df) + 1)
     mask = df["epoch_test_pipes"] >= 0
     ax.plot([e for e, m in zip(epochs, mask) if m],
@@ -50,6 +52,8 @@ epochs_to_100k = []
 
 for csv_path in csv_files:
     df = pd.read_csv(csv_path)
+    if "epoch_test_pipes" not in df.columns:
+        continue
     name = os.path.splitext(os.path.basename(csv_path))[0]
     match = re.search(r"NN(\d+)x(\d+)", name)
     if not match:

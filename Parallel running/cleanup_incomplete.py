@@ -37,3 +37,38 @@ if moved:
         print(m)
 else:
     print("No incomplete runs found.")
+
+# Fix greedy-only confirmation rows: where epoch_pipes==0 and epoch_test_pipes==100000,
+# set epoch_pipes to the last non-zero value
+import pandas as pd
+
+fixed_files = []
+for model_dir in sorted(os.listdir(DATA_DIR)):
+    model_path = os.path.join(DATA_DIR, model_dir)
+    if not os.path.isdir(model_path) or model_dir in ('__pycache__', 'ToDelete'):
+        continue
+    for fname in os.listdir(model_path):
+        if not fname.endswith('.csv'):
+            continue
+        fpath = os.path.join(model_path, fname)
+        df = pd.read_csv(fpath)
+        if 'epoch_pipes' not in df.columns:
+            continue
+        mask = df['epoch_pipes'] == 0
+        if not mask.any():
+            continue
+        last_val = 0
+        for i in range(len(df)):
+            if df.loc[i, 'epoch_pipes'] != 0:
+                last_val = df.loc[i, 'epoch_pipes']
+            elif mask[i]:
+                df.loc[i, 'epoch_pipes'] = last_val
+        df.to_csv(fpath, index=False)
+        fixed_files.append(f"  {model_dir}/{fname} ({mask.sum()} rows)")
+
+if fixed_files:
+    print(f"\nFixed epoch_pipes in {len(fixed_files)} file(s):")
+    for f in fixed_files:
+        print(f)
+else:
+    print("\nNo epoch_pipes fixes needed.")

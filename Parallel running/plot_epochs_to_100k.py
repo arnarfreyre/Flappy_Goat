@@ -30,6 +30,8 @@ epochs_to_100k = []
 
 for csv_path in csv_files:
     df = pd.read_csv(csv_path)
+    if "epoch_test_pipes" not in df.columns:
+        continue
     name = os.path.splitext(os.path.basename(csv_path))[0]
     match = re.search(r"NN(\d+)x(\d+)", name)
     if not match:
@@ -42,11 +44,15 @@ for csv_path in csv_files:
     model_sizes.append(neurons)
     epochs_to_100k.append(first_epoch)
 
-fig, ax = plt.subplots(figsize=(7, 4))
+fig, ax = plt.subplots(figsize=(7, 3.375 * 0.75))
 ax.plot(model_sizes, epochs_to_100k, "o", markersize=5)
 ax.set_xlabel("Neurons per layer")
-ax.set_ylabel("Epochs to 100k pipes")
+ax.set_ylabel("Epochs to 100 000 pipes")
+ax.set_title("Epochs to grokk")
 ax.set_xscale('log')
-fig.tight_layout()
-fig.savefig(os.path.join(data_dir, "epochs_to_100k.pdf"), dpi=600, bbox_inches="tight")
-plt.show()
+
+out_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "paper images")
+os.makedirs(out_dir, exist_ok=True)
+fig.savefig(os.path.join(out_dir, "epochs_to_100k.pdf"), dpi=600, bbox_inches="tight")
+print("Saved epochs_to_100k.pdf")
+plt.close(fig)
