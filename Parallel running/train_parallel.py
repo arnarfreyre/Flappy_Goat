@@ -57,7 +57,6 @@ TOTAL_WORKERS = 3
 # Shared lock for writing to overview.csv from multiple workers
 _overview_lock = Lock()
 
-
 def _next_run_index(csv_dir, model_name):
     """Find the next available Run index in the model's data directory."""
     existing = []
@@ -156,7 +155,7 @@ def train_one_run(args):
             f.write(f'{avg_pipes},{l_clip},{l_vf},{l_ent},{loss},{test_pipes}\n')
 
         now = time.time()
-        if now - last_print_time >= 45:
+        if now - last_print_time >= 60:
             avg10_explore = sum(recent_explore) / len(recent_explore)
             avg10_greedy = sum(recent_greedy) / len(recent_greedy) if recent_greedy else 0
             print(f"{tag} Epoch {epoch} | "
