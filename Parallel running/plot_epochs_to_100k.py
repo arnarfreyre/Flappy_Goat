@@ -12,7 +12,7 @@ mpl.rcParams.update({
     'mathtext.rm': 'Times New Roman',
     'mathtext.it': 'Times New Roman:italic',
     'mathtext.bf': 'Times New Roman:bold',
-    'font.size': 8,
+    'font.size': 12,
     'lines.linewidth': 1,
     'axes.grid': True,
     'grid.color': 'black',
