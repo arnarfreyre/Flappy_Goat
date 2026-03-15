@@ -29,7 +29,7 @@ from ple import PLE
 from silence_libpng import patch_flappy
 patch_flappy(FlappyBird)
 
-from models_config import models, model_names
+from models_config import models, model_names, MAX_PIPES, CONVERGENCE_STREAK, RUNS_PER_MODEL, TOTAL_WORKERS
 
 # Training hyperparameters (matching notebook values)
 GAMMA = 0.99
@@ -49,10 +49,6 @@ NORMALIZE_ADVANTAGE = True
 REWARD_VALUES = {'positive': 1.0, 'tick': 0.0, 'loss': -5.0}
 LR_ANNEAL_HORIZON = 5000  # matches notebook num_epochs for identical LR schedule
 
-MAX_PIPES = 100000
-CONVERGENCE_STREAK = 3
-RUNS_PER_MODEL = 2
-TOTAL_WORKERS = 3
 
 # Shared lock for writing to overview.csv from multiple workers
 _overview_lock = Lock()
@@ -72,7 +68,7 @@ def train_one_run(args):
     """Worker function: train a single model/run combo until convergence."""
     import torch
 
-    layers, model_name, _ = args
+    layers, model_name, run_idx = args
 
     # Setup agent
     agent = FlappyAgent(layers)
@@ -87,11 +83,10 @@ def train_one_run(args):
     episode.init()
     agent.prepare_greedy()
 
-    # Setup CSV output — pick next available Run index
+    # Setup CSV output — run_idx is pre-assigned by main()
     script_dir = os.path.dirname(os.path.abspath(__file__))
     csv_dir = os.path.join(script_dir, 'Data', model_name)
     os.makedirs(csv_dir, exist_ok=True)
-    run_idx = _next_run_index(csv_dir, model_name)
     tag = f"[{model_name} Run{run_idx}]"
     csv_path = os.path.join(csv_dir, f'{model_name}_Run{run_idx}.csv')
 
@@ -155,7 +150,7 @@ def train_one_run(args):
             f.write(f'{avg_pipes},{l_clip},{l_vf},{l_ent},{loss},{test_pipes}\n')
 
         now = time.time()
-        if now - last_print_time >= 60:
+        if now - last_print_time >= 45:
             avg10_explore = sum(recent_explore) / len(recent_explore)
             avg10_greedy = sum(recent_greedy) / len(recent_greedy) if recent_greedy else 0
             print(f"{tag} Epoch {epoch} | "
@@ -204,11 +199,14 @@ def train_one_run(args):
 
 
 def main():
-    # Build job list: every model × RUNS_PER_MODEL runs
+    # Build job list with pre-assigned unique run indices
+    script_dir = os.path.dirname(os.path.abspath(__file__))
     jobs = []
     for layers, name in zip(models, model_names):
+        csv_dir = os.path.join(script_dir, 'Data', name)
+        next_idx = _next_run_index(csv_dir, name)
         for i in range(RUNS_PER_MODEL):
-            jobs.append((layers, name, i))  # i is unused; run_idx determined at runtime
+            jobs.append((layers, name, next_idx + i))
 
     print(f"Launching {len(jobs)} training jobs with {TOTAL_WORKERS} workers")
     print(f"Models: {model_names}")

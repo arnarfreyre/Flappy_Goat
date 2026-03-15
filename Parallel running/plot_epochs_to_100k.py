@@ -51,7 +51,7 @@ ax.set_ylabel("Epochs to 100 000 pipes")
 ax.set_title("Epochs to grokk")
 ax.set_xscale('log')
 
-out_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "paper images")
+out_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)))
 os.makedirs(out_dir, exist_ok=True)
 fig.savefig(os.path.join(out_dir, "epochs_to_100k.pdf"), dpi=600, bbox_inches="tight")
 print("Saved epochs_to_100k.pdf")
