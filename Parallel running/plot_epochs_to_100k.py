@@ -44,7 +44,7 @@ for csv_path in csv_files:
     model_sizes.append(neurons)
     epochs_to_100k.append(first_epoch)
 
-fig, ax = plt.subplots(figsize=(7, 3.375 * 0.75))
+fig, ax = plt.subplots(figsize=(8,5))
 ax.plot(model_sizes, epochs_to_100k, "o", markersize=5)
 ax.set_xlabel("Neurons per layer")
 ax.set_ylabel("Epochs to 100 000 pipes")
